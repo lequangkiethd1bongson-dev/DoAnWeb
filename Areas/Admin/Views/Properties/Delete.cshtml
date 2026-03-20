@@ -1,0 +1,28 @@
+@model DoAnWeb.Models.Property
+
+@{
+    ViewData["Title"] = "Xóa phòng trọ";
+}
+
+<h1>Xác nhận xóa phòng trọ</h1>
+
+<div class="alert alert-danger">
+    Bạn có chắc chắn muốn xóa phòng: <strong>@Model.Title</strong>? Hành động này không thể hoàn tác.
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Địa chỉ</dt>
+            <dd class="col-sm-9">@Model.Address, @Model.City</dd>
+            <dt class="col-sm-3">Giá</dt>
+            <dd class="col-sm-9">@Model.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</dd>
+        </dl>
+        
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="PropertyId" />
+            <button type="submit" class="btn btn-danger">Xác nhận Xóa</button>
+            <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+        </form>
+    </div>
+</div>

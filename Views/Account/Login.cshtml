@@ -1,0 +1,28 @@
+@{
+    ViewData["Title"] = "Đăng nhập";
+}
+
+<div class="row justify-content-center mt-5 pt-5">
+    <div class="col-md-4">
+        <div class="card shadow border-0">
+            <div class="card-body p-5 text-center">
+                <h2 class="fw-bold mb-4">Chào mừng trở lại!</h2>
+                <form asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    <div class="form-floating mb-3">
+                        <input type="email" name="email" class="form-control" id="floatingInput" placeholder="name@example.com" required>
+                        <label for="floatingInput">Địa chỉ Email</label>
+                    </div>
+                    <div class="form-floating mb-4">
+                        <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password" required>
+                        <label for="floatingPassword">Mật khẩu</label>
+                    </div>
+                    <button class="w-100 btn btn-lg btn-primary mb-3 py-3 fw-bold" type="submit">Đăng nhập</button>
+                </form>
+                <div class="text-muted mt-2">
+                    Chưa có tài khoản? <a asp-action="Register" class="text-decoration-none fw-bold">Đăng ký ngay</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

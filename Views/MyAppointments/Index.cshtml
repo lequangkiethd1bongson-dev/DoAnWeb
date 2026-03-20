@@ -1,0 +1,74 @@
+@model IEnumerable<DoAnWeb.Models.Appointment>
+
+@{
+    ViewData["Title"] = "Lịch đặt của tôi";
+}
+
+<h2 class="fw-bold mb-4">Danh sách lịch hẹn đã đặt</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="row g-4">
+    @if (Model.Any())
+    {
+        @foreach (var item in Model)
+        {
+            <div class="col-md-6">
+                <div class="card shadow-sm border-0 h-100 p-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            @{
+                                var mainImg = item.Property?.ImagesProperties?.FirstOrDefault(i => i.IsMain) ?? item.Property?.ImagesProperties?.FirstOrDefault();
+                            }
+                            @if (mainImg != null)
+                            {
+                                <img src="@mainImg.ImageUrl" class="rounded" style="width: 100px; height: 100px; object-fit: cover;">
+                            }
+                            else
+                            {
+                                <div class="bg-light rounded d-flex align-items-center justify-content-center text-muted" style="width: 100px; height: 100px;">No Image</div>
+                            }
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5 class="fw-bold mb-1">@item.Property?.Title</h5>
+                            <p class="text-muted small mb-2"><i class="fas fa-calendar-alt"></i> Ngày hẹn: @item.AppointmentDate.ToString("dd/MM/yyyy HH:mm")</p>
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                @{
+                                    var badgeClass = item.Status switch
+                                    {
+                                        "Approved" => "bg-success",
+                                        "Cancelled" => "bg-danger",
+                                        "Pending" => "bg-warning text-dark",
+                                        _ => "bg-secondary"
+                                    };
+                                }
+                                <span class="badge @badgeClass">@item.Status</span>
+                                
+                                @if (item.Status == "Pending")
+                                {
+                                    <form asp-action="Cancel" asp-route-id="@item.AppointmentId" method="post">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn hủy lịch hẹn?')">Hủy lịch</button>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12 text-center py-5">
+            <p class="h4 text-muted">Bạn chưa có lịch hẹn nào.</p>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary mt-3">Tìm phòng trọ ngay</a>
+        </div>
+    }
+</div>

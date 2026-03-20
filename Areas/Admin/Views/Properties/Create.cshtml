@@ -1,0 +1,83 @@
+@model DoAnWeb.Models.Property
+
+@{
+    ViewData["Title"] = "Thêm phòng mới";
+}
+
+<h1>Thêm phòng mới</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="card mb-4">
+                <div class="card-header">Thông tin cơ bản</div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label">Tiêu đề</label>
+                        <input asp-for="Title" class="form-control" placeholder="Xây dựng tiêu đề hút khách..." />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Mô tả</label>
+                        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Price" class="form-label">Giá thuê (VND)</label>
+                            <input asp-for="Price" class="form-control" type="number" />
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Area" class="form-label">Diện tích (m²)</label>
+                            <input asp-for="Area" class="form-control" type="number" step="0.1" />
+                            <span asp-validation-for="Area" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="City" class="form-label">Thành phố</label>
+                            <input asp-for="City" class="form-control" />
+                            <span asp-validation-for="City" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Address" class="form-label">Địa chỉ chi tiết</label>
+                            <input asp-for="Address" class="form-control" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Status" class="form-label">Trạng thái</label>
+                        <select asp-for="Status" class="form-select">
+                            <option value="Available">Trống</option>
+                            <option value="Rented">Đã thuê</option>
+                            <option value="Hidden">Ẩn</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">Hình ảnh</div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Chọn nhiều ảnh</label>
+                        <input type="file" name="imageFiles" multiple class="form-control" accept="image/*" />
+                        <div class="form-text">Bạn có thể chọn nhiều ảnh cùng lúc.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Chọn index ảnh chính (0 là ảnh đầu tiên)</label>
+                        <input type="number" name="mainImageIndex" value="0" class="form-control" style="width: 100px;" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-5">
+                <button type="submit" class="btn btn-primary btn-lg px-5">Lưu thông tin</button>
+                <a asp-action="Index" class="btn btn-secondary btn-lg px-5">Hủy</a>
+            </div>
+        </form>
+    </div>
+</div>

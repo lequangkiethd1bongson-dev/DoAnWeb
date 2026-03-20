@@ -1,0 +1,63 @@
+@model IEnumerable<DoAnWeb.Models.Property>
+
+@{
+    ViewData["Title"] = "Phòng yêu thích";
+}
+
+<h2 class="fw-bold mb-4">Danh sách phòng bạn đã yêu thích</h2>
+
+<div class="row" id="favoritesList">
+    @if (Model.Any())
+    {
+        @foreach (var item in Model)
+        {
+            <div class="col-md-6 col-lg-4 property-item-@item.PropertyId">
+                <div class="card shadow-sm border-0 mb-4 rounded-4 overflow-hidden">
+                    @{
+                        var mainImg = item.ImagesProperties.FirstOrDefault(i => i.IsMain)?.ImageUrl ?? item.ImagesProperties.FirstOrDefault()?.ImageUrl;
+                    }
+                    <img src="@mainImg" class="card-img-top" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="fw-bold text-truncate">@item.Title</h5>
+                        <p class="text-danger fw-bold mb-0">@item.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</p>
+                        <p class="text-muted small">@item.Address, @item.City</p>
+                        <div class="d-flex gap-2 mt-3">
+                            <a asp-controller="Home" asp-action="Details" asp-route-id="@item.PropertyId" class="btn btn-primary btn-sm w-100">Xem ngay</a>
+                            <button type="button" onclick="removeFavorite(@item.PropertyId)" class="btn btn-outline-danger btn-sm w-100">Bỏ thích</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12 text-center py-5">
+            <p class="h4 text-muted">Bạn chưa yêu thích phòng nào.</p>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary mt-3">Khám phá ngay</a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function removeFavorite(id) {
+            if (!confirm('Bạn muốn bỏ yêu thích phòng này?')) return;
+            
+            fetch('/Favorites/Toggle?propertyId=' + id, {
+                method: 'POST'
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && !data.isFavorite) {
+                    $('.property-item-' + id).fadeOut(300, function() {
+                        $(this).remove();
+                        if ($('#favoritesList').children().length === 0) {
+                            location.reload(); // Reload to show "No favorites" message
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}
