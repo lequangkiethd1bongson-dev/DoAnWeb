@@ -29,18 +29,29 @@ namespace DoAnWeb.Areas.Admin.Controllers
         }
 
         // GET: Admin/Properties/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            ViewBag.Amenities = await _context.Amenities.ToListAsync();
             return View();
         }
 
         // POST: Admin/Properties/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Property property, List<IFormFile> imageFiles, int mainImageIndex)
+        public async Task<IActionResult> Create(Property property, List<IFormFile> imageFiles, int mainImageIndex, int[] selectedAmenities)
         {
             if (ModelState.IsValid)
             {
+                // Add Amenities
+                if (selectedAmenities != null)
+                {
+                    property.PropertyAmenities = new List<PropertyAmenity>();
+                    foreach (var amenityId in selectedAmenities)
+                    {
+                        property.PropertyAmenities.Add(new PropertyAmenity { AmenityId = amenityId });
+                    }
+                }
+
                 _context.Add(property);
                 await _context.SaveChangesAsync();
 
@@ -81,9 +92,13 @@ namespace DoAnWeb.Areas.Admin.Controllers
 
             var property = await _context.Properties
                 .Include(p => p.ImagesProperties)
+                .Include(p => p.PropertyAmenities)
                 .FirstOrDefaultAsync(m => m.PropertyId == id);
 
             if (property == null) return NotFound();
+
+            ViewBag.Amenities = await _context.Amenities.ToListAsync();
+            ViewBag.SelectedAmenities = property.PropertyAmenities.Select(pa => pa.AmenityId).ToList();
 
             return View(property);
         }
@@ -91,7 +106,7 @@ namespace DoAnWeb.Areas.Admin.Controllers
         // POST: Admin/Properties/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Property property, List<IFormFile> imageFiles, int mainImageIndex)
+        public async Task<IActionResult> Edit(int id, Property property, List<IFormFile> imageFiles, int mainImageIndex, int[] selectedAmenities)
         {
             if (id != property.PropertyId) return NotFound();
 
@@ -99,6 +114,18 @@ namespace DoAnWeb.Areas.Admin.Controllers
             {
                 try
                 {
+                    // Update Amenities
+                    var existingAmenities = _context.PropertyAmenities.Where(pa => pa.PropertyId == id);
+                    _context.PropertyAmenities.RemoveRange(existingAmenities);
+
+                    if (selectedAmenities != null)
+                    {
+                        foreach (var amenityId in selectedAmenities)
+                        {
+                            _context.PropertyAmenities.Add(new PropertyAmenity { PropertyId = id, AmenityId = amenityId });
+                        }
+                    }
+
                     _context.Update(property);
                     await _context.SaveChangesAsync();
 
@@ -165,6 +192,19 @@ namespace DoAnWeb.Areas.Admin.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateStatus(int id, string status)
+        {
+            var property = await _context.Properties.FindAsync(id);
+            if (property == null) return NotFound();
+
+            property.Status = status;
+            _context.Update(property);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true });
         }
 
         [HttpPost]

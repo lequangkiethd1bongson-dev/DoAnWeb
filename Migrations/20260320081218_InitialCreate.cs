@@ -50,7 +50,6 @@ namespace DoAnWeb.Migrations
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                 });
 
-/*
             migrationBuilder.CreateTable(
                 name: "Properties",
                 columns: table => new
@@ -70,7 +69,6 @@ namespace DoAnWeb.Migrations
                 {
                     table.PrimaryKey("PK_Properties", x => x.PropertyId);
                 });
-*/
 
             migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
@@ -178,7 +176,6 @@ namespace DoAnWeb.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-/*
             migrationBuilder.CreateTable(
                 name: "Appointments",
                 columns: table => new
@@ -207,9 +204,7 @@ namespace DoAnWeb.Migrations
                         principalColumn: "PropertyId",
                         onDelete: ReferentialAction.Cascade);
                 });
-*/
 
-/*
             migrationBuilder.CreateTable(
                 name: "ImagesProperties",
                 columns: table => new
@@ -230,9 +225,7 @@ namespace DoAnWeb.Migrations
                         principalColumn: "PropertyId",
                         onDelete: ReferentialAction.Cascade);
                 });
-*/
 
-/*
             migrationBuilder.CreateTable(
                 name: "Posts",
                 columns: table => new
@@ -254,7 +247,6 @@ namespace DoAnWeb.Migrations
                         principalColumn: "PropertyId",
                         onDelete: ReferentialAction.Cascade);
                 });
-*/
 
             migrationBuilder.CreateIndex(
                 name: "IX_Appointments_PropertyId",

@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\DoAnWeb\\DoAnWeb.csproj": {}
+    "C:\\DoAnWeb\\DoAnWeb.csproj": {}
   },
   "projects": {
-    "D:\\DoAnWeb\\DoAnWeb.csproj": {
+    "C:\\DoAnWeb\\DoAnWeb.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\DoAnWeb\\DoAnWeb.csproj",
+        "projectUniqueName": "C:\\DoAnWeb\\DoAnWeb.csproj",
         "projectName": "DoAnWeb",
-        "projectPath": "D:\\DoAnWeb\\DoAnWeb.csproj",
-        "packagesPath": "C:\\Users\\pc\\.nuget\\packages\\",
-        "outputPath": "D:\\DoAnWeb\\obj\\",
+        "projectPath": "C:\\DoAnWeb\\DoAnWeb.csproj",
+        "packagesPath": "C:\\Users\\Viet Anh\\.nuget\\packages\\",
+        "outputPath": "C:\\DoAnWeb\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\pc\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Viet Anh\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -43,7 +43,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
@@ -91,7 +92,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.312/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

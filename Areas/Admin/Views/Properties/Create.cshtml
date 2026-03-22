@@ -1,83 +1,157 @@
 @model DoAnWeb.Models.Property
 
 @{
-    ViewData["Title"] = "Thêm phòng mới";
+    ViewData["Title"] = "Thêm bất động sản mới";
 }
 
-<h1>Thêm phòng mới</h1>
-
-<div class="row">
-    <div class="col-md-8">
-        <form asp-action="Create" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            
-            <div class="card mb-4">
-                <div class="card-header">Thông tin cơ bản</div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <label asp-for="Title" class="form-label">Tiêu đề</label>
-                        <input asp-for="Title" class="form-control" placeholder="Xây dựng tiêu đề hút khách..." />
-                        <span asp-validation-for="Title" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="Description" class="form-label">Mô tả</label>
-                        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
-                        <span asp-validation-for="Description" class="text-danger"></span>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="Price" class="form-label">Giá thuê (VND)</label>
-                            <input asp-for="Price" class="form-control" type="number" />
-                            <span asp-validation-for="Price" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="Area" class="form-label">Diện tích (m²)</label>
-                            <input asp-for="Area" class="form-control" type="number" step="0.1" />
-                            <span asp-validation-for="Area" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="City" class="form-label">Thành phố</label>
-                            <input asp-for="City" class="form-control" />
-                            <span asp-validation-for="City" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="Address" class="form-label">Địa chỉ chi tiết</label>
-                            <input asp-for="Address" class="form-control" />
-                            <span asp-validation-for="Address" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="Status" class="form-label">Trạng thái</label>
-                        <select asp-for="Status" class="form-select">
-                            <option value="Available">Trống</option>
-                            <option value="Rented">Đã thuê</option>
-                            <option value="Hidden">Ẩn</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card mb-4">
-                <div class="card-header">Hình ảnh</div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <label class="form-label">Chọn nhiều ảnh</label>
-                        <input type="file" name="imageFiles" multiple class="form-control" accept="image/*" />
-                        <div class="form-text">Bạn có thể chọn nhiều ảnh cùng lúc.</div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Chọn index ảnh chính (0 là ảnh đầu tiên)</label>
-                        <input type="number" name="mainImageIndex" value="0" class="form-control" style="width: 100px;" />
-                    </div>
-                </div>
-            </div>
-
-            <div class="mb-5">
-                <button type="submit" class="btn btn-primary btn-lg px-5">Lưu thông tin</button>
-                <a asp-action="Index" class="btn btn-secondary btn-lg px-5">Hủy</a>
-            </div>
-        </form>
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h2 class="fw-bold mb-0">Thêm <span class="text-danger">bất động sản</span> mới</h2>
+        <a asp-action="Index" class="btn btn-outline-dark rounded-pill px-4">Quay lại danh sách</a>
     </div>
+
+    <form asp-action="Create" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        
+        <div class="row g-4">
+            <!-- Left Column: Basic Info -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4 border-bottom pb-2">Thông tin cơ bản</h5>
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label fw-bold small text-uppercase">Tiêu đề niêm yết</label>
+                            <input asp-for="Title" class="form-control rounded-pill border-0 bg-light px-3 shadow-none" placeholder="Ví dụ: Căn hộ Studio view Landmark 81..." />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label fw-bold small text-uppercase">Mô tả chi tiết</label>
+                            <textarea asp-for="Description" class="form-control rounded-4 border-0 bg-light px-3 shadow-none" rows="6" placeholder="Mô tả về không gian, tiện ích xung quanh, chính sách thuê..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Price" class="form-label fw-bold small text-uppercase">Giá thuê (VND/tháng)</label>
+                                <input asp-for="Price" class="form-control rounded-pill border-0 bg-light px-3 shadow-none" type="number" />
+                                <span asp-validation-for="Price" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Area" class="form-label fw-bold small text-uppercase">Diện tích (m²)</label>
+                                <input asp-for="Area" class="form-control rounded-pill border-0 bg-light px-3 shadow-none" type="number" step="0.1" />
+                                <span asp-validation-for="Area" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="NumberOfRooms" class="form-label fw-bold small text-uppercase">Số phòng ngủ</label>
+                                <input asp-for="NumberOfRooms" class="form-control rounded-pill border-0 bg-light px-3 shadow-none" type="number" />
+                                <span asp-validation-for="NumberOfRooms" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4 border-bottom pb-2">Vị trí & Phân loại</h5>
+                        <div class="row g-3">
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="PropertyType" class="form-label fw-bold small text-uppercase">Loại tài sản</label>
+                                <select asp-for="PropertyType" class="form-select rounded-pill border-0 bg-light px-3 shadow-none">
+                                    <option value="House">Nhà ở</option>
+                                    <option value="Land">Đất</option>
+                                    <option value="Apartment">Chung cư</option>
+                                    <option value="Studio">Phòng Studio</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="City" class="form-label fw-bold small text-uppercase">Thành phố</label>
+                                <input asp-for="City" class="form-control rounded-pill border-0 bg-light px-3 shadow-none" placeholder="Hồ Chí Minh" />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="District" class="form-label fw-bold small text-uppercase">Quận/Huyện</label>
+                                <input asp-for="District" class="form-control rounded-pill border-0 bg-light px-3 shadow-none" placeholder="Quận 1" />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Address" class="form-label fw-bold small text-uppercase">Địa chỉ đầy đủ</label>
+                            <input asp-for="Address" class="form-control rounded-pill border-0 bg-light px-3 shadow-none" placeholder="Số nhà, tên đường..." />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4 border-bottom pb-2">Tiện ích (Amenities)</h5>
+                        <div class="row g-3">
+                            @foreach (var amenity in ViewBag.Amenities as List<Amenity>)
+                            {
+                                <div class="col-md-4 col-6">
+                                    <div class="form-check custom-checkbox py-2">
+                                        <input class="form-check-input" type="checkbox" name="selectedAmenities" value="@amenity.Id" id="amenity-@amenity.Id">
+                                        <label class="form-check-label ms-2" for="amenity-@amenity.Id">
+                                            <i class="@amenity.Icon text-muted me-2"></i>@amenity.Name
+                                        </label>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Images & Status -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4 border-bottom pb-2">Trạng thái & Ảnh</h5>
+                        <div class="mb-4">
+                            <label asp-for="Status" class="form-label fw-bold small text-uppercase">Trạng thái ban đầu</label>
+                            <select asp-for="Status" class="form-select rounded-pill border-0 bg-light px-3 shadow-none">
+                                <option value="Available">Đang trống</option>
+                                <option value="Pending">Đang xử lý</option>
+                                <option value="Sold">Đã bán/thuê</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-uppercase">Tải lên hình ảnh</label>
+                            <div class="upload-box p-4 border-2 border-dashed border-light rounded-4 text-center bg-light mb-2">
+                                <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-2"></i>
+                                <input type="file" name="imageFiles" multiple class="form-control d-none" id="imageInput" accept="image/*" />
+                                <button type="button" class="btn btn-outline-danger btn-sm rounded-pill px-3" onclick="document.getElementById('imageInput').click()">Chọn ảnh</button>
+                                <div class="small text-muted mt-2">Nhiều nhất 10 ảnh</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-uppercase">Index ảnh chính (0 là đầu)</label>
+                            <input type="number" name="mainImageIndex" value="0" class="form-control rounded-pill border-0 bg-light px-3 shadow-none" style="width: 100px;" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-danger btn-lg rounded-pill w-100 py-3 fw-bold mb-3 shadow">Lưu niêm yết</button>
+                    <a asp-action="Index" class="btn btn-link text-muted text-decoration-none small">Hủy bỏ và quay lại</a>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
+
+<style>
+    .custom-checkbox .form-check-input:checked {
+        background-color: var(--primary-red);
+        border-color: var(--primary-red);
+    }
+    .upload-box {
+        transition: all 0.3s ease;
+    }
+    .upload-box:hover {
+        background: #fdf2f4 !important;
+        border-color: var(--primary-red) !important;
+    }
+</style>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

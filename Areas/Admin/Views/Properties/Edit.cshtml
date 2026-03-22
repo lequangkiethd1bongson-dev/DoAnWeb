@@ -1,125 +1,188 @@
 @model DoAnWeb.Models.Property
 
 @{
-    ViewData["Title"] = "Sửa phòng trọ";
+    ViewData["Title"] = "Chỉnh sửa bất động sản";
+    var selectedAmenities = ViewBag.SelectedAmenities as List<int> ?? new List<int>();
 }
 
-<h1>Chỉnh sửa phòng trọ</h1>
-
-<div class="row">
-    <div class="col-md-8">
-        <form asp-action="Edit" enctype="multipart/form-data">
-            <input type="hidden" asp-for="PropertyId" />
-            <input type="hidden" asp-for="CreatedAt" />
-            
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            
-            <div class="card mb-4">
-                <div class="card-header">Thông tin cơ bản</div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <label asp-for="Title" class="form-label">Tiêu đề</label>
-                        <input asp-for="Title" class="form-control" />
-                        <span asp-validation-for="Title" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="Description" class="form-label">Mô tả</label>
-                        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
-                        <span asp-validation-for="Description" class="text-danger"></span>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="Price" class="form-label">Giá thuê (VND)</label>
-                            <input asp-for="Price" class="form-control" type="number" />
-                            <span asp-validation-for="Price" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="Area" class="form-label">Diện tích (m²)</label>
-                            <input asp-for="Area" class="form-control" type="number" step="0.1" />
-                            <span asp-validation-for="Area" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="City" class="form-label">Thành phố</label>
-                            <input asp-for="City" class="form-control" />
-                            <span asp-validation-for="City" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="Address" class="form-label">Địa chỉ chi tiết</label>
-                            <input asp-for="Address" class="form-control" />
-                            <span asp-validation-for="Address" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="Status" class="form-label">Trạng thái</label>
-                        <select asp-for="Status" class="form-select">
-                            <option value="Available">Trống</option>
-                            <option value="Rented">Đã thuê</option>
-                            <option value="Hidden">Ẩn</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card mb-4">
-                <div class="card-header">Hình ảnh hiện tại</div>
-                <div class="card-body">
-                    <div class="row mb-3" id="imageGallery">
-                        @foreach (var img in Model.ImagesProperties)
-                        {
-                            <div class="col-md-3 mb-3 text-center" id="img-wrapper-@img.ImageId">
-                                <div class="position-relative">
-                                    <img src="@img.ImageUrl" class="img-thumbnail w-100" style="height: 120px; object-fit: cover;" />
-                                    <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1" onclick="deleteImage(@img.ImageId)">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                                <div class="small mt-1 text-muted">
-                                    @(img.IsMain ? "⭐ Ảnh chính" : "")
-                                </div>
-                            </div>
-                        }
-                    </div>
-                    <hr />
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Thêm ảnh mới</label>
-                        <input type="file" name="imageFiles" multiple class="form-control" accept="image/*" />
-                    </div>
-                </div>
-            </div>
-
-            <div class="mb-5">
-                <button type="submit" class="btn btn-primary btn-lg px-5">Cập nhật</button>
-                <a asp-action="Index" class="btn btn-secondary btn-lg px-5">Hủy</a>
-            </div>
-        </form>
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h2 class="fw-bold mb-0">Chỉnh sửa <span class="text-danger">bất động sản</span></h2>
+        <a asp-action="Index" class="btn btn-outline-dark rounded-pill px-4">Quay lại danh sách</a>
     </div>
+
+    <form asp-action="Edit" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="PropertyId" />
+        <input type="hidden" asp-for="CreatedAt" />
+        <input type="hidden" asp-for="ViewCount" />
+
+        <div class="row g-4">
+            <!-- Left Column: Basic Info & Amenities -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4 border-bottom pb-2">Thông tin cơ bản</h5>
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label fw-bold small text-uppercase">Tiêu đề niêm yết</label>
+                            <input asp-for="Title" class="form-control rounded-pill border-0 bg-light px-3 shadow-none" />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label fw-bold small text-uppercase">Mô tả chi tiết</label>
+                            <textarea asp-for="Description" class="form-control rounded-4 border-0 bg-light px-3 shadow-none" rows="6"></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Price" class="form-label fw-bold small text-uppercase">Giá thuê (VND/tháng)</label>
+                                <input asp-for="Price" class="form-control rounded-pill border-0 bg-light px-3 shadow-none" type="number" />
+                                <span asp-validation-for="Price" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Area" class="form-label fw-bold small text-uppercase">Diện tích (m²)</label>
+                                <input asp-for="Area" class="form-control rounded-pill border-0 bg-light px-3 shadow-none" type="number" step="0.1" />
+                                <span asp-validation-for="Area" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="NumberOfRooms" class="form-label fw-bold small text-uppercase">Số phòng ngủ</label>
+                                <input asp-for="NumberOfRooms" class="form-control rounded-pill border-0 bg-light px-3 shadow-none" type="number" />
+                                <span asp-validation-for="NumberOfRooms" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4 border-bottom pb-2">Tiện ích (Amenities)</h5>
+                        <div class="row g-3">
+                            @foreach (var amenity in ViewBag.Amenities as List<Amenity>)
+                            {
+                                <div class="col-md-4 col-6">
+                                    <div class="form-check custom-checkbox py-2">
+                                        <input class="form-check-input" type="checkbox" name="selectedAmenities" value="@amenity.Id" 
+                                               id="amenity-@amenity.Id" @(selectedAmenities.Contains(amenity.Id) ? "checked" : "")>
+                                        <label class="form-check-label ms-2" for="amenity-@amenity.Id">
+                                            <i class="@amenity.Icon text-muted me-2"></i>@amenity.Name
+                                        </label>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4 border-bottom pb-2">Hình ảnh hiện tại</h5>
+                        <div class="row g-3" id="imageGallery">
+                            @foreach (var img in Model.ImagesProperties)
+                            {
+                                <div class="col-md-3 col-6" id="img-wrapper-@img.ImageId">
+                                    <div class="position-relative group">
+                                        <img src="@img.ImageUrl" class="rounded-3 w-100 shadow-sm" style="height: 120px; object-fit: cover;" />
+                                        <button type="button" class="btn btn-danger btn-sm rounded-circle position-absolute top-0 end-0 m-1 opacity-0 group-hover-opacity-100 transition-all shadow-sm" 
+                                                onclick="deleteImage(@img.ImageId)" title="Xóa ảnh">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                        @if (img.IsMain)
+                                        {
+                                            <div class="position-absolute bottom-0 start-0 w-100 bg-danger text-white small py-1 text-center rounded-bottom" style="font-size: 0.65rem;">ẢNH CHÍNH</div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Status & New Images -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4 border-bottom pb-2">Trạng thái & Phân loại</h5>
+                        <div class="mb-3">
+                            <label asp-for="Status" class="form-label fw-bold small text-uppercase">Trạng thái hiện tại</label>
+                            <select asp-for="Status" class="form-select rounded-pill border-0 bg-light px-3 shadow-none">
+                                <option value="Available">Đang trống</option>
+                                <option value="Pending">Đang xử lý</option>
+                                <option value="Sold">Đã bán/thuê</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="PropertyType" class="form-label fw-bold small text-uppercase">Loại tài sản</label>
+                            <select asp-for="PropertyType" class="form-select rounded-pill border-0 bg-light px-3 shadow-none">
+                                <option value="House">Nhà ở</option>
+                                <option value="Land">Đất</option>
+                                <option value="Apartment">Chung cư</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4 border-bottom pb-2">Thêm ảnh mới</h5>
+                        <div class="upload-box p-4 border-2 border-dashed border-light rounded-4 text-center bg-light">
+                            <i class="fas fa-images fa-3x text-muted mb-2"></i>
+                            <input type="file" name="imageFiles" multiple class="form-control d-none" id="imageInput" accept="image/*" />
+                            <button type="button" class="btn btn-outline-danger btn-sm rounded-pill px-3" onclick="document.getElementById('imageInput').click()">Chọn ảnh</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-danger btn-lg rounded-pill w-100 py-3 fw-bold mb-3 shadow">Cập nhật niêm yết</button>
+                    <a asp-action="Index" class="btn btn-link text-muted text-decoration-none small">Hủy và quay lại</a>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
+
+<style>
+    .custom-checkbox .form-check-input:checked {
+        background-color: var(--primary-red);
+        border-color: var(--primary-red);
+    }
+    .group:hover .group-hover-opacity-100 {
+        opacity: 1 !important;
+    }
+    .transition-all {
+        transition: all 0.2s ease-in-out;
+    }
+</style>
 
 @section Scripts {
     <script>
         function deleteImage(id) {
-            if (confirm('Bạn có chắc chắn muốn xóa ảnh này?')) {
-                fetch('/Admin/Properties/DeleteImage/' + id, {
-                    method: 'POST',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        document.getElementById('img-wrapper-' + id).remove();
-                    } else {
-                        alert('Có lỗi xảy ra khi xóa ảnh.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Lỗi kết nối server.');
-                });
-            }
+            Swal.fire({
+                title: 'Xác nhận xóa?',
+                text: "Bạn không thể hoàn tác hành động này!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ff385c',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Xóa ngay',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('/Admin/Properties/DeleteImage/' + id, {
+                        method: 'POST',
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            $(`#img-wrapper-${id}`).fadeOut(300, function() { $(this).remove(); });
+                            Swal.fire('Đã xóa!', 'Ảnh đã được gỡ bỏ.', 'success');
+                        }
+                    });
+                }
+            });
         }
     </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

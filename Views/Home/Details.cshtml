@@ -4,101 +4,281 @@
     ViewData["Title"] = Model.Title;
 }
 
-<nav aria-label="breadcrumb" class="my-4">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a asp-action="Index">Trang chủ</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Chi tiết phòng</li>
-    </ol>
-</nav>
+<style>
+    .property-header-section {
+        background: #fff;
+        border-radius: 24px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+        margin-bottom: 30px;
+        border: 1px solid #f0f0f0;
+    }
+    .amenity-pill {
+        display: flex;
+        align-items: center;
+        background: #f8f9fa;
+        padding: 12px 20px;
+        border-radius: 12px;
+        margin-bottom: 10px;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+    }
+    .amenity-pill:hover {
+        background: #fff;
+        border-color: #ff385c;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .stat-badge {
+        background: #fff;
+        padding: 15px;
+        border-radius: 16px;
+        text-align: center;
+        border: 1px solid #eee;
+    }
+    .star-rating input { display: none; }
+    .star-rating label { color: #eee; cursor: pointer; transition: color 0.2s; }
+    .star-rating input:checked ~ label, .star-rating label:hover, .star-rating label:hover ~ label { color: #ffc107; }
+</style>
 
-<div class="row">
-    <div class="col-lg-8">
-        <!-- Gallery -->
-        <div id="propertyGallery" class="carousel slide shadow rounded overflow-hidden mb-4" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                @{
-                    int count = 0;
-                    foreach (var img in Model.ImagesProperties.OrderByDescending(i => i.IsMain))
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-action="Index" class="text-danger text-decoration-none small fw-bold">Trang chủ</a></li>
+                    <li class="breadcrumb-item active small text-muted" aria-current="page">@Model.Title</li>
+                </ol>
+            </nav>
+
+            <!-- Gallery -->
+            <div id="propertyGallery" class="carousel slide shadow rounded-4 overflow-hidden mb-5" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @if (Model.ImagesProperties.Any())
                     {
-                        <div class="carousel-item @(count == 0 ? "active" : "")">
-                            <img src="@img.ImageUrl" class="d-block w-100" style="height: 500px; object-fit: cover;" alt="Property Image">
-                        </div>
-                        count++;
+                        var count = 0;
+                        foreach (var img in Model.ImagesProperties.OrderByDescending(i => i.IsMain))
+                        {
+                            <div class="carousel-item @(count == 0 ? "active" : "")">
+                                <img src="@img.ImageUrl" class="d-block w-100" style="height: 550px; object-fit: cover;" alt="Property">
+                            </div>
+                            count++;
+                        }
                     }
-                    if (count == 0)
+                    else
                     {
                         <div class="carousel-item active">
-                            <div class="bg-secondary d-flex align-items-center justify-content-center text-white" style="height: 500px;">
-                                No Image Available
+                            <div class="bg-light d-flex align-items-center justify-content-center text-muted" style="height: 550px;">
+                                <i class="fas fa-image fa-3x mb-2"></i> No Image Available
                             </div>
                         </div>
                     }
-                }
-            </div>
-            @if (count > 1)
-            {
+                </div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#propertyGallery" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="carousel-control-prev-icon rounded-circle bg-dark p-3" aria-hidden="true"></span>
                 </button>
                 <button class="carousel-control-next" type="button" data-bs-target="#propertyGallery" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="carousel-control-next-icon rounded-circle bg-dark p-3" aria-hidden="true"></span>
                 </button>
-            }
-        </div>
+            </div>
 
-        <div class="card shadow-sm border-0 p-4 mb-4">
-            <h1 class="fw-bold text-dark">@Model.Title</h1>
-            <p class="text-muted"><i class="fas fa-map-marker-alt text-danger"></i> @Model.Address, @Model.City</p>
-            <hr />
-            <div class="row text-center mb-4">
-                <div class="col-4 border-end">
-                    <p class="text-muted mb-1 small">Mức giá</p>
-                    <h5 class="fw-bold text-primary">@Model.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</h5>
+            <div class="property-header-section">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <span class="badge bg-danger rounded-pill px-3 py-2 mb-3">@Model.PropertyType</span>
+                        <h1 class="fw-bold mb-2">@Model.Title</h1>
+                        <p class="text-muted"><i class="fas fa-map-marker-alt text-danger me-2"></i>@Model.Address, @Model.District, @Model.City</p>
+                    </div>
                 </div>
-                <div class="col-4 border-end">
-                    <p class="text-muted mb-1 small">Diện tích</p>
-                    <h5 class="fw-bold">@Model.Area m²</h5>
+
+                <div class="row g-3 mb-5">
+                    <div class="col-md-3">
+                        <div class="stat-badge">
+                            <div class="small text-muted mb-1 text-uppercase fw-bold">Giá thuê</div>
+                            <div class="text-danger fw-bold h4 mb-0">@Model.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-badge">
+                            <div class="small text-muted mb-1 text-uppercase fw-bold">Diện tích</div>
+                            <div class="fw-bold h4 mb-0">@Model.Area m²</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-badge">
+                            <div class="small text-muted mb-1 text-uppercase fw-bold">Số phòng</div>
+                            <div class="fw-bold h4 mb-0">@Model.NumberOfRooms</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-badge">
+                            <div class="small text-muted mb-1 text-uppercase fw-bold">Lượt xem</div>
+                            <div class="fw-bold h4 mb-0"><i class="fas fa-eye text-muted me-2 small"></i>@Model.ViewCount</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-4">
-                    <p class="text-muted mb-1 small">Trạng thái</p>
-                    <span class="badge @(Model.Status == "Available" ? "bg-success" : "bg-warning")">@Model.Status</span>
+
+                <h5 class="fw-bold mb-3 border-bottom pb-2">Tiện ích đi kèm</h5>
+                <div class="row g-2 mb-5">
+                    @if (Model.PropertyAmenities != null && Model.PropertyAmenities.Any())
+                    {
+                        foreach (var pa in Model.PropertyAmenities)
+                        {
+                            <div class="col-md-4 col-6">
+                                <div class="amenity-pill">
+                                    <i class="@pa.Amenity.Icon text-danger me-3 fs-5"></i>
+                                    <span class="small fw-bold">@pa.Amenity.Name</span>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="col-12 py-3 text-muted fst-italic">Phòng này chưa được gán tiện ích cụ thể.</div>
+                    }
+                </div>
+
+                <h5 class="fw-bold mb-3 border-bottom pb-2">Mô tả chi tiết</h5>
+                <p class="text-muted" style="white-space: pre-line; line-height: 2;">@Model.Description</p>
+            </div>
+
+            <!-- Reviews Section -->
+            <div class="property-header-section mt-4">
+                <div class="d-flex justify-content-between align-items-center mb-5">
+                    <h5 class="fw-bold mb-0">Đánh giá thực tế (@Model.Reviews.Count)</h5>
+                    <div class="text-warning">
+                        @{
+                            var avgRating = Model.Reviews.Any() ? Model.Reviews.Average(r => r.Rating) : 0;
+                        }
+                        <span class="h4 fw-bold text-dark me-2">@avgRating.ToString("0.0")</span>
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <i class="@(i <= Math.Round(avgRating) ? "fas" : "far") fa-star"></i>
+                        }
+                    </div>
+                </div>
+
+                <div class="reviews-wrapper mb-5">
+                    @foreach (var review in Model.Reviews.OrderByDescending(r => r.CreatedAt))
+                    {
+                        <div class="p-4 rounded-4 bg-light mb-3 border border-white">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar bg-white text-danger fw-bold rounded-circle border d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px;">
+                                        @(review.User?.FullName?[0] ?? 'U')
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">@(review.User?.FullName ?? "Khách hàng")</div>
+                                        <div class="small text-muted">@review.CreatedAt.ToString("dd/MM/yyyy")</div>
+                                    </div>
+                                </div>
+                                <div class="text-warning small">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        <i class="@(i <= review.Rating ? "fas" : "far") fa-star"></i>
+                                    }
+                                </div>
+                            </div>
+                            <p class="mb-0 text-muted">@review.Comment</p>
+                        </div>
+                    }
+                    @if (!Model.Reviews.Any())
+                    {
+                        <div class="text-center py-4 text-muted fst-italic">Chưa có đánh giá nào.</div>
+                    }
+                </div>
+
+                <div class="bg-light rounded-4 p-4">
+                    <h6 class="fw-bold mb-4">Để lại chia sẻ của bạn</h6>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <form asp-controller="Reviews" asp-action="Create" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="PropertyId" value="@Model.PropertyId" />
+                            <div class="mb-3">
+                                <div class="star-rating d-flex flex-row-reverse justify-content-start">
+                                    <input type="radio" name="Rating" value="5" id="star5" checked /><label for="star5" class="fas fa-star fs-3 p-1"></label>
+                                    <input type="radio" name="Rating" value="4" id="star4" /><label for="star4" class="fas fa-star fs-3 p-1"></label>
+                                    <input type="radio" name="Rating" value="3" id="star3" /><label for="star3" class="fas fa-star fs-3 p-1"></label>
+                                    <input type="radio" name="Rating" value="2" id="star2" /><label for="star2" class="fas fa-star fs-3 p-1"></label>
+                                    <input type="radio" name="Rating" value="1" id="star1" /><label for="star1" class="fas fa-star fs-3 p-1"></label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <textarea name="Comment" class="form-control border-0 rounded-4 px-3 py-3 shadow-none" rows="3" required placeholder="Nêu cảm nghĩ về phòng, chủ nhà, tiện ích..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-danger rounded-pill px-5 fw-bold py-2">Đăng đánh giá</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <p class="text-center mb-0 small">Vui lòng <a asp-controller="Account" asp-action="Login" class="text-danger fw-bold">đăng nhập</a> để tham gia đánh giá.</p>
+                    }
                 </div>
             </div>
-            <h5 class="fw-bold">Mô tả chi tiết</h5>
-            <p style="white-space: pre-line;">@Model.Description</p>
         </div>
-    </div>
 
-    <div class="col-lg-4">
-        <div class="card shadow border-0 sticky-top" style="top: 20px;">
-            <div class="card-body p-4">
-                <h4 class="fw-bold mb-4">Đặt lịch xem phòng</h4>
-                @if (User.Identity?.IsAuthenticated == true)
-                {
-                    <form asp-controller="Booking" asp-action="Create" method="post">
-                        <input type="hidden" name="PropertyId" value="@Model.PropertyId" />
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Ngày xem</label>
-                            <input type="datetime-local" name="AppointmentDate" class="form-control" required />
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden sticky-top" style="top: 100px; z-index: 10;">
+                <div class="card-header bg-danger text-white p-4 border-0">
+                    <h5 class="fw-bold mb-0">Đặt lịch xem phòng</h5>
+                </div>
+                <div class="card-body p-4">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <form asp-controller="Booking" asp-action="Create" method="post">
+                            <input type="hidden" name="PropertyId" value="@Model.PropertyId" />
+                            <div class="mb-4">
+                                <label class="form-label fw-bold small text-uppercase mb-3">Ngày & Giờ dự kiến</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0"><i class="far fa-clock text-danger"></i></span>
+                                    <input type="text" name="AppointmentDate" id="appointmentPicker" class="form-control border-start-0 shadow-none bg-white py-3" readonly required placeholder="Chọn thời gian..." />
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold small text-uppercase mb-3">Ghi chú thêm</label>
+                                <textarea name="Note" class="form-control border-0 bg-light rounded-3 px-3 py-3 shadow-none" rows="3" placeholder="Nhắn gì cho chúng tôi?"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-danger w-100 py-3 rounded-pill fw-bold shadow">GỬI YÊU CẦU NGAY</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="fas fa-lock fa-3x text-light mb-3"></i>
+                            <p class="mb-4 text-muted">Vui lòng đăng nhập để gửi yêu cầu đặt lịch xem trực tiếp.</p>
+                            <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Path" class="btn btn-outline-danger btn-lg rounded-pill px-5 fw-bold">Đăng nhập</a>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Ghi chú (tùy chọn)</label>
-                            <textarea name="Note" class="form-control" rows="3" placeholder="Ví dụ: Tôi muốn xem vào buổi sáng..."></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">Gửi yêu cầu đặt lịch</button>
-                    </form>
-                }
-                else
-                {
-                    <div class="text-center py-4 bg-light rounded">
-                        <p class="mb-3">Vui lòng đăng nhập để đặt lịch xem phòng</p>
-                        <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Path" class="btn btn-outline-primary btn-sm">Đăng nhập ngay</a>
+                    }
+                    <div class="mt-4 pt-4 border-top">
+                        <div class="d-flex align-items-center text-muted small mb-2"><i class="fas fa-check-circle text-danger me-2"></i>Không tốn phí xem tin</div>
+                        <div class="d-flex align-items-center text-muted small"><i class="fas fa-check-circle text-danger me-2"></i>Chúng tôi sẽ liên hệ trong 30p</div>
                     </div>
-                }
-                <div class="mt-4 pt-4 border-top">
-                    <p class="small text-muted"><i class="fas fa-info-circle"></i> Chúng tôi sẽ liên hệ lại với bạn để xác nhận lịch hẹn trong vòng 24h.</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            flatpickr("#appointmentPicker", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                minDate: "today",
+                time_24hr: true,
+                minuteIncrement: 30,
+                theme: "airbnb"
+            });
+
+            @if (TempData["SuccessMessage"] != null) {
+                <text>Swal.fire({ icon: 'success', title: 'Thành công!', text: '@TempData["SuccessMessage"]', confirmButtonColor: '#ff385c' });</text>
+            }
+            @if (TempData["ErrorMessage"] != null) {
+                <text>Swal.fire({ icon: 'error', title: 'Lỗi lịch hẹn', text: '@TempData["ErrorMessage"]', confirmButtonColor: '#ff385c' });</text>
+            }
+        });
+    </script>
+}

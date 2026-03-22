@@ -1,0 +1,44 @@
+@model DoAnWeb.Models.Amenity
+
+@{
+    ViewData["Title"] = "Thêm tiện ích mới";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    <h2 class="fw-bold mb-4 text-center">Thêm <span class="text-danger">tiện ích</span></h2>
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label fw-bold">Tên tiện ích</label>
+                            <input asp-for="Name" class="form-control rounded-pill px-3 shadow-none border-0 bg-light" placeholder="Ví dụ: Miễn phí Wi-Fi" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Icon" class="form-label fw-bold">Mã Icon (FontAwesome)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0"><i class="fas fa-icons text-danger"></i></span>
+                                <input asp-for="Icon" class="form-control border-0 bg-light shadow-none" placeholder="Ví dụ: fas fa-wifi" />
+                            </div>
+                            <span asp-validation-for="Icon" class="text-danger small"></span>
+                            <div class="mt-2 small text-muted">
+                                <i class="fas fa-info-circle me-1"></i>Sử dụng các lớp của FontAwesome 6.
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center gap-2 pt-3">
+                            <a asp-action="Index" class="btn btn-outline-dark rounded-pill px-4">Quay lại</a>
+                            <button type="submit" class="btn btn-danger rounded-pill px-4">Lưu lại</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

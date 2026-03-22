@@ -5,267 +5,179 @@
 }
 
 <style>
-    .property-card {
-        border: none;
-        border-radius: 20px;
-        overflow: hidden;
-        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        margin-bottom: 40px;
-        background: #fff;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        border: 1px solid rgba(0,0,0,0.03);
-    }
-
-    .property-card:hover {
-        transform: translateY(-10px) scale(1.02);
-        box-shadow: 0 25px 50px rgba(0,0,0,0.12);
-        border-color: rgba(255, 56, 92, 0.2);
-    }
-
-    .gallery-container {
-        display: flex;
-        gap: 6px;
-        height: 320px;
-        background: #f0f0f0;
-        overflow: hidden;
-    }
-
-    .gallery-main {
-        flex: 2.5;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.8s ease;
-    }
-
-    .property-card:hover .gallery-main {
-        transform: scale(1.1);
-    }
-
-    .gallery-side {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-    }
-
-    .gallery-item {
-        height: 50%;
-        object-fit: cover;
-        transition: opacity 0.3s, filter 0.3s;
-    }
-
-    .property-card:hover .gallery-item {
-        filter: brightness(0.9);
-    }
-
-    .property-content {
-        padding: 25px;
-        transition: background 0.3s;
-    }
-
-    .property-card:hover .property-content {
-        background: linear-gradient(to bottom, #ffffff, #fffdfd);
-    }
-
-    .property-title {
-        font-size: 1.4rem;
-        font-weight: 700;
-        color: #111;
-        margin-bottom: 8px;
-        text-decoration: none;
-        display: block;
-        transition: color 0.3s;
-    }
-
-    .property-card:hover .property-title {
-        color: #ff385c;
-    }
-
-    .property-info {
-        color: #717171;
-        font-size: 0.95rem;
-        margin-bottom: 12px;
-        display: flex;
-        gap: 15px;
-        align-items: center;
-    }
-
-    .property-price {
-        color: #ff385c;
-        font-size: 1.6rem;
-        font-weight: 800;
-        letter-spacing: -0.5px;
-    }
-
-    .favorite-btn {
-        background: white;
-        border: none;
-        color: #b0b0b0;
-        transition: all 0.3s;
-        font-size: 1.6rem;
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-
-    .favorite-btn:hover {
-        transform: scale(1.1);
-        color: #ff385c;
-    }
-
-    .favorite-btn.active {
-        color: #ff385c;
-        animation: heartBeat 0.5s;
-    }
-
-    @@keyframes heartBeat {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.3); }
-        100% { transform: scale(1); }
-    }
-</style>
-
-<style>
-    .hero-wrapper {
-        position: relative;
-        margin-bottom: 80px;
-    }
-
-    .carousel-item {
-        height: 450px;
-    }
-
-    .carousel-item img {
-        object-fit: cover;
-        height: 100%;
-        filter: brightness(0.7);
-    }
-
-    .search-overlay {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 100%;
-        z-index: 10;
+    .hero-section {
+        background: linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.9)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+        background-size: cover;
+        background-position: center;
+        padding: 120px 0 80px;
         text-align: center;
-        color: white;
     }
 
-    .search-card {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
+    .search-container {
+        max-width: 1000px;
+        margin: -50px auto 0;
+        background: #fff;
+        padding: 30px;
+        border-radius: 24px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+        border: 1px solid #eee;
+        position: relative;
+        z-index: 10;
+    }
+
+    .filter-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .property-card {
+        border: 1px solid #eee;
+        background: #fff;
+    }
+
+    .compare-checkbox {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        z-index: 5;
+    }
+
+    .compare-badge {
+        background: rgba(0,0,0,0.6);
+        color: #fff;
+        padding: 4px 12px;
         border-radius: 50px;
-        padding: 10px;
-        display: inline-block;
-        width: 90%;
-        max-width: 850px;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        font-size: 0.75rem;
+        backdrop-filter: blur(4px);
     }
 </style>
 
-<div class="hero-wrapper">
-    <!-- Hero Slider -->
-    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
-        <div class="carousel-inner rounded-4 overflow-hidden">
-            <div class="carousel-item active">
-                <img src="https://images.unsplash.com/photo-1560448204-603b3fc33ddc?auto=format&fit=crop&w=1200" class="d-block w-100" alt="Slider 1">
-            </div>
-            <div class="carousel-item">
-                <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1200" class="d-block w-100" alt="Slider 2">
-            </div>
-            <div class="carousel-item">
-                <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1200" class="d-block w-100" alt="Slider 3">
-            </div>
-        </div>
-    </div>
-
-    <!-- Search Overlay -->
-    <div class="search-overlay">
-        <h1 class="display-4 fw-bold mb-4 drop-shadow">Tìm kiếm chỗ ở đẳng cấp</h1>
-        <div class="search-card mx-auto">
-            <form asp-action="Index" method="get" class="row g-0 align-items-center">
-                <div class="col-md-4 border-end">
-                    <div class="input-group px-3">
-                        <span class="text-danger me-2"><i class="fas fa-map-marker-alt"></i></span>
-                        <input type="text" name="city" value="@ViewBag.City" class="form-control border-0 shadow-none p-0" placeholder="Bạn muốn ở đâu?">
-                    </div>
-                </div>
-                <div class="col-md-3 border-end">
-                    <input type="number" name="minPrice" value="@ViewBag.MinPrice" class="form-control border-0 shadow-none text-center" placeholder="Giá từ">
-                </div>
-                <div class="col-md-3">
-                    <input type="number" name="maxPrice" value="@ViewBag.MaxPrice" class="form-control border-0 shadow-none text-center" placeholder="Đến">
-                </div>
-                <div class="col-md-2 p-1">
-                    <button type="submit" class="btn btn-danger rounded-pill w-100 py-3 fw-bold shadow-sm">
-                        <i class="fas fa-search me-1"></i> Tìm
-                    </button>
-                </div>
-            </form>
-        </div>
+<div class="hero-section mb-5">
+    <div class="container">
+        <h1 class="display-3 fw-bold mb-3">Tìm kiếm <span class="text-danger">không gian</span> sống</h1>
+        <p class="lead text-muted mb-0">Hàng ngàn lựa chọn bất động sản phù hợp với phong cách của bạn.</p>
     </div>
 </div>
 
 <div class="container">
-    <div class="row">
+    <div class="search-container mb-5">
+        <form asp-action="Index" method="get">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="filter-label">Bạn muốn tìm gì?</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-0 text-danger"><i class="fas fa-search"></i></span>
+                        <input type="text" name="keyword" value="@ViewBag.Keyword" class="form-control border-0 shadow-none ps-0" placeholder="Từ khóa, tên phòng...">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="filter-label">Vị trí</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-0 text-danger"><i class="fas fa-map-marker-alt"></i></span>
+                        <input type="text" name="district" value="@ViewBag.District" class="form-control border-0 shadow-none ps-0" placeholder="Quận/Huyện">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="filter-label">Loại tài sản</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-0 text-danger"><i class="fas fa-home"></i></span>
+                        <select name="propertyType" class="form-select border-0 shadow-none ps-0">
+                            <option value="">Tất cả</option>
+                            <option value="House" selected="@(ViewBag.PropertyType == "House")">Nhà ở</option>
+                            <option value="Land" selected="@(ViewBag.PropertyType == "Land")">Đất</option>
+                            <option value="Apartment" selected="@(ViewBag.PropertyType == "Apartment")">Chung cư</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-danger w-100 rounded-pill py-3 fw-bold mt-2">Tìm kiếm</button>
+                </div>
+            </div>
+            
+            <div class="row g-3 mt-2 pt-3 border-top">
+                <div class="col-md-3">
+                    <div class="d-flex align-items-center">
+                        <span class="text-muted small me-2">Giá:</span>
+                        <input type="number" name="minPrice" value="@ViewBag.MinPrice" class="form-control form-control-sm border-0 border-bottom rounded-0 px-1 shadow-none" placeholder="Từ" style="width: 80px;">
+                        <span class="mx-1 ms-2">-</span>
+                        <input type="number" name="maxPrice" value="@ViewBag.MaxPrice" class="form-control form-control-sm border-0 border-bottom rounded-0 px-1 shadow-none" placeholder="Đến" style="width: 80px;">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="d-flex align-items-center">
+                        <span class="text-muted small me-2">Diện tích:</span>
+                        <input type="number" name="minArea" value="@ViewBag.MinArea" class="form-control form-control-sm border-0 border-bottom rounded-0 px-1 shadow-none" placeholder="Từ" style="width: 60px;">
+                        <span class="mx-2 ms-2">-</span>
+                        <input type="number" name="maxArea" value="@ViewBag.MaxArea" class="form-control form-control-sm border-0 border-bottom rounded-0 px-1 shadow-none" placeholder="Đến" style="width: 60px;">
+                    </div>
+                </div>
+                <div class="col-md-6 text-end">
+                    <div class="btn-group">
+                        <a href="/" class="btn btn-link text-muted text-decoration-none small"><i class="fas fa-undo me-1"></i>Xóa lọc</a>
+                        <button type="button" class="btn btn-link text-danger text-decoration-none small ms-3" id="goCompareBtn">
+                            <i class="fas fa-exchange-alt me-1"></i>Xem so sánh
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="row g-4">
         @foreach (var item in Model)
         {
-            <div class="col-12">
-                <div class="property-card">
-                    <!-- Gallery Top -->
-                    <div class="gallery-container">
-                        @{
-                            var imgs = item.ImagesProperties.OrderByDescending(i => i.IsMain).ToList();
-                            if (imgs.Count > 0)
-                            {
-                                <img src="@imgs[0].ImageUrl" class="gallery-main" alt="Main">
-                                if (imgs.Count > 1)
-                                {
-                                    <div class="gallery-side">
-                                        <img src="@imgs[1].ImageUrl" class="gallery-item" alt="Thumb 1">
-                                        @if (imgs.Count > 2)
-                                        {
-                                            <div class="position-relative h-50">
-                                                <img src="@imgs[2].ImageUrl" class="w-100 h-100 object-fit-cover" alt="Thumb 2">
-                                                @if (imgs.Count > 3)
-                                                {
-                                                    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-50 text-white fw-bold">
-                                                        +@(imgs.Count - 2)
-                                                    </div>
-                                                }
-                                            </div>
-                                        }
-                                    </div>
-                                }
-                            }
-                        }
+            <div class="col-lg-4 col-md-6">
+                <div class="property-card h-100 position-relative">
+                    <!-- Compare Toggle -->
+                    <div class="form-check compare-checkbox">
+                        <input class="form-check-input compare-toggle" type="checkbox" value="@item.PropertyId" id="comp-@item.PropertyId">
+                        <label class="form-check-label compare-badge d-none" for="comp-@item.PropertyId">So sánh</label>
                     </div>
 
-                    <!-- Info Bottom -->
-                    <div class="property-content">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <a asp-action="Details" asp-route-id="@item.PropertyId" class="property-title">@item.Title</a>
-                            @{
-                                bool isFav = ViewBag.FavoriteIds != null && ((List<int>)ViewBag.FavoriteIds).Contains(item.PropertyId);
-                            }
-                            <button class="favorite-btn @(isFav ? "active" : "")" onclick="toggleFavorite(@item.PropertyId, this)">
-                                <i class="fas fa-heart"></i>
-                            </button>
+                    @{
+                        var mainImg = item.ImagesProperties.FirstOrDefault(i => i.IsMain) ?? item.ImagesProperties.FirstOrDefault();
+                    }
+                    <div class="position-relative overflow-hidden" style="height: 240px;">
+                        <img src="@(mainImg?.ImageUrl ?? "/images/no-image.jpg")" class="w-100 h-100 object-fit-cover transition-transform" alt="Property">
+                        @{
+                            bool isFav = ViewBag.FavoriteIds != null && ((List<int>)ViewBag.FavoriteIds).Contains(item.PropertyId);
+                        }
+                        <button class="btn btn-light rounded-circle shadow-sm position-absolute top-0 end-0 m-3 p-0 d-flex align-items-center justify-content-center @(isFav ? "text-danger" : "text-muted")" 
+                                style="width: 40px; height: 40px; z-index: 5;" onclick="toggleFavorite(@item.PropertyId, this)">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                    </div>
+
+                    <div class="p-4">
+                        <div class="text-danger small fw-bold mb-2">@item.PropertyType</div>
+                        <h5 class="fw-bold mb-3"><a asp-action="Details" asp-route-id="@item.PropertyId" class="text-dark text-decoration-none">@item.Title</a></h5>
+                        
+                        <div class="d-flex align-items-center text-muted small mb-3">
+                            <i class="fas fa-map-marker-alt text-danger me-2"></i>@item.District, @item.City
                         </div>
-                        <div class="property-info">
-                            <span>2 PN</span> • <span>Hướng Tây Nam</span> • <span>Nhà ngõ, hẻm</span>
+
+                        <div class="row g-0 py-3 border-top border-bottom mb-3">
+                            <div class="col-4 border-end text-center">
+                                <div class="small text-muted"><i class="fas fa-bed me-1"></i>Phòng</div>
+                                <div class="fw-bold">@item.NumberOfRooms</div>
+                            </div>
+                            <div class="col-4 border-end text-center">
+                                <div class="small text-muted"><i class="fas fa-expand me-1"></i>DT</div>
+                                <div class="fw-bold">@item.Area m²</div>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div class="small text-muted"><i class="fas fa-star me-1 text-warning"></i>Vote</div>
+                                <div class="fw-bold">@(item.Reviews.Any() ? Math.Round(item.Reviews.Average(r => r.Rating), 1) : 0)</div>
+                            </div>
                         </div>
-                        <div class="d-flex align-items-baseline gap-3">
-                            <span class="property-price">@item.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))/tháng</span>
-                            <span class="h5 mb-0">@item.Area m²</span>
-                        </div>
-                        <div class="text-muted mt-2">
-                            <i class="fas fa-map-marker-alt"></i> @item.City
+
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="fw-bold text-danger fs-5">@item.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</div>
+                            <a asp-action="Details" asp-route-id="@item.PropertyId" class="btn btn-outline-dark btn-sm rounded-pill px-3">Chi tiết</a>
                         </div>
                     </div>
                 </div>
@@ -276,6 +188,45 @@
 
 @section Scripts {
     <script>
+        $(document).ready(function() {
+            // Load selected comparison items from localStorage
+            let compareIds = JSON.parse(localStorage.getItem('compareIds') || '[]');
+            $('.compare-toggle').each(function() {
+                if (compareIds.includes($(this).val())) {
+                    $(this).prop('checked', true);
+                    $(this).next().removeClass('d-none');
+                }
+            });
+
+            // Handle toggle
+            $('.compare-toggle').on('change', function() {
+                const id = $(this).val();
+                if (this.checked) {
+                    if (compareIds.length >= 3) {
+                        alert('Bạn chỉ có thể chọn tối đa 3 bất động sản để so sánh.');
+                        this.checked = false;
+                        return;
+                    }
+                    if (!compareIds.includes(id)) compareIds.push(id);
+                    $(this).next().removeClass('d-none');
+                } else {
+                    compareIds = compareIds.filter(i => i != id);
+                    $(this).next().addClass('d-none');
+                }
+                localStorage.setItem('compareIds', JSON.stringify(compareIds));
+                window.dispatchEvent(new Event('compareUpdated'));
+            });
+
+            $('#goCompareBtn').on('click', function() {
+                const ids = JSON.parse(localStorage.getItem('compareIds') || '[]');
+                if (ids.length < 1) {
+                    Swal.fire('Lưu ý', 'Vui lòng chọn ít nhất 1 bất động sản để so sánh.', 'info');
+                    return;
+                }
+                window.location.href = '@Url.Action("Index", "Compare")?ids=' + ids.join(',');
+            });
+        });
+
         function toggleFavorite(id, btn) {
             fetch('/Favorites/Toggle?propertyId=' + id, {
                 method: 'POST',
@@ -284,8 +235,8 @@
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    if (data.isFavorite) $(btn).addClass('active');
-                    else $(btn).removeClass('active');
+                    if (data.isFavorite) $(btn).addClass('text-danger').removeClass('text-muted');
+                    else $(btn).removeClass('text-danger').addClass('text-muted');
                 } else {
                     window.location.href = '/Account/Login';
                 }

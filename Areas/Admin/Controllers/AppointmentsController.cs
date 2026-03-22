@@ -17,14 +17,69 @@ namespace DoAnWeb.Areas.Admin.Controllers
         }
 
         // GET: Admin/Appointments
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(DateTime? date, string? search)
         {
-            var appointments = await _context.Appointments
+            var query = _context.Appointments
                 .Include(a => a.Property)
                 .Include(a => a.User)
+                .AsQueryable();
+
+            if (date.HasValue)
+            {
+                query = query.Where(a => a.AppointmentDate.Date == date.Value.Date);
+            }
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                var searchKey = search.Trim().ToLower();
+                query = query.Where(a => a.User.FullName.ToLower().Contains(searchKey) || 
+                                         a.Property.Title.ToLower().Contains(searchKey));
+            }
+
+            var appointments = await query
                 .OrderByDescending(a => a.AppointmentDate)
                 .ToListAsync();
+
+            ViewBag.DateFilter = date?.ToString("yyyy-MM-dd");
+            ViewBag.SearchFilter = search;
+
             return View(appointments);
+        }
+
+        // GET: Admin/Appointments/ExportToCsv
+        public async Task<IActionResult> ExportToCsv(DateTime? date, string? search)
+        {
+            var query = _context.Appointments
+                .Include(a => a.Property)
+                .Include(a => a.User)
+                .AsQueryable();
+
+            if (date.HasValue)
+            {
+                query = query.Where(a => a.AppointmentDate.Date == date.Value.Date);
+            }
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                var searchKey = search.Trim().ToLower();
+                query = query.Where(a => a.User.FullName.ToLower().Contains(searchKey) || 
+                                         a.Property.Title.ToLower().Contains(searchKey));
+            }
+
+            var appointments = await query
+                .OrderByDescending(a => a.AppointmentDate)
+                .ToListAsync();
+
+            var builder = new System.Text.StringBuilder();
+            builder.AppendLine("ID,Khách hàng,Bất động sản,Ngày hẹn,Trạng thái,Ghi chú");
+
+            foreach (var app in appointments)
+            {
+                builder.AppendLine($"{app.AppointmentId},\"{app.User?.FullName}\",\"{app.Property?.Title}\",\"{app.AppointmentDate:yyyy-MM-dd HH:mm}\",\"{app.Status}\",\"{app.Note?.Replace("\"", "\"\"")}\"");
+            }
+
+            var csvData = System.Text.Encoding.UTF8.GetPreamble().Concat(System.Text.Encoding.UTF8.GetBytes(builder.ToString())).ToArray();
+            return File(csvData, "text/csv", $"Appointments_{DateTime.Now:yyyyMMdd}.csv");
         }
 
         // POST: Admin/Appointments/Approve/5

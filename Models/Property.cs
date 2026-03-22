@@ -25,12 +25,24 @@ namespace DoAnWeb.Models
         [Required]
         public string City { get; set; } = string.Empty;
 
-        public string? Status { get; set; } // e.g., Available, Rented
+        [Required]
+        public string District { get; set; } = string.Empty;
+
+        [Required]
+        public string PropertyType { get; set; } = "House"; // House, Land, Apartment
+
+        public int NumberOfRooms { get; set; }
+
+        public string? Status { get; set; } // Available, Sold, Pending
+
+        public int ViewCount { get; set; } = 0;
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         // Navigation properties
         public virtual ICollection<ImagesProperty> ImagesProperties { get; set; } = new List<ImagesProperty>();
         public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+        public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
+        public virtual ICollection<PropertyAmenity> PropertyAmenities { get; set; } = new List<PropertyAmenity>();
     }
 }

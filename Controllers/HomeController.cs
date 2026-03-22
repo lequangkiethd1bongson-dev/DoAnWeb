@@ -15,31 +15,68 @@ namespace DoAnWeb.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string? city, decimal? minPrice, decimal? maxPrice)
+        public async Task<IActionResult> Index(string? keyword, string? city, string? district, string? propertyType, int? rooms, decimal? minPrice, decimal? maxPrice, double? minArea, double? maxArea, string? sortBy)
         {
             var query = _context.Properties
                 .Include(p => p.ImagesProperties)
+                .Include(p => p.Reviews)
                 .Where(p => p.Status == "Available")
                 .AsQueryable();
 
+            // Lọc theo từ khóa (Tiêu đề hoặc Mô tả)
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                var searchKey = keyword.Trim().ToLower();
+                query = query.Where(p => p.Title.ToLower().Contains(searchKey) || (p.Description != null && p.Description.ToLower().Contains(searchKey)));
+            }
+
+            // Lọc theo thành phố
             if (!string.IsNullOrEmpty(city))
             {
-                query = query.Where(p => p.City.Contains(city));
+                var searchCity = city.Trim().ToLower();
+                query = query.Where(p => p.City.ToLower().Contains(searchCity));
             }
 
-            if (minPrice.HasValue)
+            // Lọc theo quận/huyện
+            if (!string.IsNullOrEmpty(district))
             {
-                query = query.Where(p => p.Price >= minPrice.Value);
+                var searchDistrict = district.Trim().ToLower();
+                query = query.Where(p => p.District.ToLower().Contains(searchDistrict));
             }
 
-            if (maxPrice.HasValue)
+            // Lọc theo loại bất động sản
+            if (!string.IsNullOrEmpty(propertyType))
             {
-                query = query.Where(p => p.Price <= maxPrice.Value);
+                query = query.Where(p => p.PropertyType == propertyType);
             }
 
-            var properties = await query.OrderByDescending(p => p.CreatedAt).ToListAsync();
+            // Lọc theo số phòng
+            if (rooms.HasValue)
+            {
+                query = query.Where(p => p.NumberOfRooms >= rooms.Value);
+            }
+
+            // Lọc theo giá
+            if (minPrice.HasValue) query = query.Where(p => p.Price >= minPrice.Value);
+            if (maxPrice.HasValue) query = query.Where(p => p.Price <= maxPrice.Value);
+
+            // Lọc theo diện tích
+            if (minArea.HasValue) query = query.Where(p => p.Area >= minArea.Value);
+            if (maxArea.HasValue) query = query.Where(p => p.Area <= maxArea.Value);
+
+            // Sắp xếp
+            query = sortBy switch
+            {
+                "price_asc" => query.OrderBy(p => p.Price),
+                "price_desc" => query.OrderByDescending(p => p.Price),
+                "newest" => query.OrderByDescending(p => p.CreatedAt),
+                _ => query.OrderByDescending(p => p.CreatedAt) // Mặc định tin mới nhất
+            };
+
+            var properties = await query.ToListAsync();
             
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
+            var userName = User.Identity?.Name;
+            var user = userName != null ? await _context.Users.FirstOrDefaultAsync(u => u.UserName == userName) : null;
             if (user != null)
             {
                 ViewBag.FavoriteIds = await _context.Favorites
@@ -52,9 +89,17 @@ namespace DoAnWeb.Controllers
                 ViewBag.FavoriteIds = new List<int>();
             }
 
+            // Gửi lại các giá trị lọc để hiển thị trên form
+            ViewBag.Keyword = keyword;
             ViewBag.City = city;
+            ViewBag.District = district;
+            ViewBag.PropertyType = propertyType;
+            ViewBag.Rooms = rooms;
             ViewBag.MinPrice = minPrice;
             ViewBag.MaxPrice = maxPrice;
+            ViewBag.MinArea = minArea;
+            ViewBag.MaxArea = maxArea;
+            ViewBag.SortBy = sortBy;
 
             return View(properties);
         }
@@ -63,9 +108,18 @@ namespace DoAnWeb.Controllers
         {
             var property = await _context.Properties
                 .Include(p => p.ImagesProperties)
+                .Include(p => p.PropertyAmenities)
+                    .ThenInclude(pa => pa.Amenity)
+                .Include(p => p.Reviews)
+                    .ThenInclude(r => r.User)
                 .FirstOrDefaultAsync(m => m.PropertyId == id);
 
             if (property == null) return NotFound();
+
+            // Increment View Count
+            property.ViewCount++;
+            _context.Update(property);
+            await _context.SaveChangesAsync();
 
             return View(property);
         }

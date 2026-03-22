@@ -4,56 +4,169 @@
     ViewData["Title"] = "Phòng yêu thích";
 }
 
-<h2 class="fw-bold mb-4">Danh sách phòng bạn đã yêu thích</h2>
+<style>
+    .fav-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        background: #fff;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        margin-bottom: 30px;
+    }
 
-<div class="row" id="favoritesList">
-    @if (Model.Any())
-    {
-        @foreach (var item in Model)
+    .fav-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    }
+
+    .fav-img-wrapper {
+        position: relative;
+        height: 220px;
+        overflow: hidden;
+    }
+
+    .fav-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s;
+    }
+
+    .fav-card:hover .fav-img {
+        transform: scale(1.1);
+    }
+
+    .fav-status {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        padding: 5px 12px;
+        border-radius: 20px;
+        background: rgba(255, 56, 92, 0.9);
+        color: white;
+        font-weight: 600;
+        font-size: 0.8rem;
+        backdrop-filter: blur(5px);
+    }
+
+    .remove-fav {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background: white;
+        color: #ff385c;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        transition: all 0.3s;
+        border: none;
+    }
+
+    .remove-fav:hover {
+        background: #ff385c;
+        color: white;
+        transform: scale(1.1);
+    }
+</style>
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h1 class="fw-bold mb-1">Danh sách yêu thích</h1>
+            <p class="text-muted">Lưu trữ những bất động sản bạn quan tâm</p>
+        </div>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-dark rounded-pill px-4">
+            <i class="fas fa-search me-2"></i>Tiếp tục khám phá
+        </a>
+    </div>
+
+    <div class="row" id="favoritesList">
+        @if (Model.Any())
         {
-            <div class="col-md-6 col-lg-4 property-item-@item.PropertyId">
-                <div class="card shadow-sm border-0 mb-4 rounded-4 overflow-hidden">
-                    @{
-                        var mainImg = item.ImagesProperties.FirstOrDefault(i => i.IsMain)?.ImageUrl ?? item.ImagesProperties.FirstOrDefault()?.ImageUrl;
-                    }
-                    <img src="@mainImg" class="card-img-top" style="height: 200px; object-fit: cover;">
-                    <div class="card-body">
-                        <h5 class="fw-bold text-truncate">@item.Title</h5>
-                        <p class="text-danger fw-bold mb-0">@item.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</p>
-                        <p class="text-muted small">@item.Address, @item.City</p>
-                        <div class="d-flex gap-2 mt-3">
-                            <a asp-controller="Home" asp-action="Details" asp-route-id="@item.PropertyId" class="btn btn-primary btn-sm w-100">Xem ngay</a>
-                            <button type="button" onclick="removeFavorite(@item.PropertyId)" class="btn btn-outline-danger btn-sm w-100">Bỏ thích</button>
+            @foreach (var item in Model)
+            {
+                <div class="col-md-6 col-lg-4 property-item-@item.PropertyId">
+                    <div class="fav-card">
+                        <div class="fav-img-wrapper">
+                            @{
+                                var mainImg = item.ImagesProperties.FirstOrDefault(i => i.IsMain)?.ImageUrl ?? item.ImagesProperties.FirstOrDefault()?.ImageUrl ?? "https://via.placeholder.com/400x300?text=No+Image";
+                            }
+                            <img src="@mainImg" class="fav-img" alt="@item.Title">
+                            <span class="fav-status">@item.PropertyType</span>
+                            <button onclick="removeFavorite(@item.PropertyId)" class="remove-fav" title="Bỏ yêu thích">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h5 class="fw-bold text-truncate mb-2">@item.Title</h5>
+                            <div class="text-muted small mb-3">
+                                <i class="fas fa-map-marker-alt me-1"></i> @item.District, @item.City
+                            </div>
+                            <div class="d-flex gap-3 mb-4">
+                                <span class="small"><i class="fas fa-bed me-1 text-danger"></i>@item.NumberOfRooms Phòng</span>
+                                <span class="small"><i class="fas fa-expand me-1 text-danger"></i>@item.Area m²</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="h5 fw-bold text-danger mb-0">@item.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</span>
+                                <a asp-controller="Home" asp-action="Details" asp-route-id="@item.PropertyId" class="btn btn-dark rounded-pill btn-sm px-4">Xem chi tiết</a>
+                            </div>
                         </div>
                     </div>
                 </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center py-5">
+                <div class="mb-4">
+                    <i class="far fa-heart fa-5x text-light"></i>
+                </div>
+                <h3 class="text-muted">Danh sách đang trống</h3>
+                <p class="text-muted mb-4">Bạn chưa lưu bất kỳ bất động sản nào vào mục yêu thích.</p>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-danger btn-lg rounded-pill px-5">Bắt đầu tìm kiếm</a>
             </div>
         }
-    }
-    else
-    {
-        <div class="col-12 text-center py-5">
-            <p class="h4 text-muted">Bạn chưa yêu thích phòng nào.</p>
-            <a asp-controller="Home" asp-action="Index" class="btn btn-primary mt-3">Khám phá ngay</a>
-        </div>
-    }
+    </div>
 </div>
 
 @section Scripts {
     <script>
         function removeFavorite(id) {
-            if (!confirm('Bạn muốn bỏ yêu thích phòng này?')) return;
-            
-            fetch('/Favorites/Toggle?propertyId=' + id, {
-                method: 'POST'
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success && !data.isFavorite) {
-                    $('.property-item-' + id).fadeOut(300, function() {
-                        $(this).remove();
-                        if ($('#favoritesList').children().length === 0) {
-                            location.reload(); // Reload to show "No favorites" message
+            Swal.fire({
+                title: 'Bỏ yêu thích?',
+                text: "Bạn có chắc muốn xóa bất động sản này khỏi danh sách?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ff385c',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Có, xóa nó!',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('/Favorites/Toggle?propertyId=' + id, {
+                        method: 'POST'
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success && !data.isFavorite) {
+                            $('.property-item-' + id).fadeOut(400, function() {
+                                $(this).remove();
+                                if ($('#favoritesList').children().length === 0) {
+                                    location.reload();
+                                }
+                            });
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Đã xóa!',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
                         }
                     });
                 }

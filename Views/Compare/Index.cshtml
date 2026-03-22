@@ -1,0 +1,142 @@
+@model IEnumerable<DoAnWeb.Models.Property>
+
+@{
+    ViewData["Title"] = "So sánh bất động sản";
+    var amenities = Model.SelectMany(p => p.PropertyAmenities.Select(pa => pa.Amenity)).DistinctBy(a => a.Id).ToList();
+}
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h2 class="fw-bold mb-0">So sánh <span class="text-danger">bất động sản</span></h2>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-dark rounded-pill px-4">Tiếp tục chọn</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-exchange-alt fa-3x text-muted mb-3"></i>
+            <h4>Chưa có bất động sản nào được chọn để so sánh</h4>
+            <p class="text-muted">Vui lòng quay lại trang chủ và chọn ít nhất 2 bất động sản.</p>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-danger rounded-pill px-4 mt-3">Quay lại trang chủ</a>
+        </div>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="table-responsive">
+                <table class="table mb-0 align-middle text-center">
+                    <thead class="bg-light">
+                        <tr>
+                            <th style="width: 200px;" class="text-start ps-4">Đặc điểm</th>
+                            @foreach (var item in Model)
+                            {
+                                <th style="min-width: 250px;">
+                                    <div class="position-relative">
+                                        <button class="btn btn-sm btn-light rounded-circle position-absolute top-0 end-0 m-1 remove-compare" data-id="@item.PropertyId">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                        @{
+                                            var mainImage = item.ImagesProperties.FirstOrDefault(i => i.IsMain) ?? item.ImagesProperties.FirstOrDefault();
+                                        }
+                                        <img src="@(mainImage?.ImageUrl ?? "/images/no-image.jpg")" class="rounded-3 mb-2 shadow-sm" style="width: 100%; height: 150px; object-fit: cover;" />
+                                        <div class="fw-bold text-truncate px-2">@item.Title</div>
+                                    </div>
+                                </th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-start ps-4 fw-bold">Giá</td>
+                            @foreach (var item in Model)
+                            {
+                                <td class="text-danger fw-bold fs-5">@item.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td class="text-start ps-4 fw-bold">Diện tích</td>
+                            @foreach (var item in Model)
+                            {
+                                <td>@item.Area m²</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td class="text-start ps-4 fw-bold">Loại</td>
+                            @foreach (var item in Model)
+                            {
+                                <td>@item.PropertyType</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td class="text-start ps-4 fw-bold">Số phòng</td>
+                            @foreach (var item in Model)
+                            {
+                                <td>@item.NumberOfRooms</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td class="text-start ps-4 fw-bold">Vị trí</td>
+                            @foreach (var item in Model)
+                            {
+                                <td class="text-muted small">@item.District, @item.City</td>
+                            }
+                        </tr>
+                        <tr class="bg-light">
+                            <td colspan="@(Model.Count() + 1)" class="text-start ps-4 fw-bold py-3"><i class="fas fa-star text-warning me-2"></i>Tiện ích</td>
+                        </tr>
+                        @foreach (var am in amenities)
+                        {
+                            <tr>
+                                <td class="text-start ps-4 fw-bold"><i class="@am.Icon me-2 text-muted"></i>@am.Name</td>
+                                @foreach (var item in Model)
+                                {
+                                    <td>
+                                        @if (item.PropertyAmenities.Any(pa => pa.AmenityId == am.Id))
+                                        {
+                                            <i class="fas fa-check-circle text-success"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-times-circle text-light"></i>
+                                        }
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot class="bg-light">
+                        <tr>
+                            <td></td>
+                            @foreach (var item in Model)
+                            {
+                                <td class="py-4">
+                                    <a asp-controller="Home" asp-action="Details" asp-route-id="@item.PropertyId" class="btn btn-danger btn-sm rounded-pill px-4">Xem chi tiết</a>
+                                </td>
+                            }
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('.remove-compare').on('click', function() {
+                const id = $(this).data('id');
+                let ids = JSON.parse(localStorage.getItem('compareIds') || '[]');
+                ids = ids.filter(i => i != id);
+                localStorage.setItem('compareIds', JSON.stringify(ids));
+                
+                // Reload with updated IDs
+                if (ids.length > 0) {
+                    window.location.href = '@Url.Action("Index", "Compare")?ids=' + ids.join(',');
+                } else {
+                    window.location.href = '@Url.Action("Index", "Compare")?ids=';
+                }
+            });
+        });
+    </script>
+}
