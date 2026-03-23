@@ -5,87 +5,41 @@
 }
 
 <style>
-    .hero-section {
-        background: linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.9)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
-        background-size: cover;
-        background-position: center;
-        padding: 120px 0 80px;
-        text-align: center;
-    }
-
-    .search-container {
-        max-width: 1000px;
-        margin: -50px auto 0;
-        background: #fff;
-        padding: 30px;
-        border-radius: 24px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.06);
-        border: 1px solid #eee;
-        position: relative;
-        z-index: 10;
-    }
-
-    .filter-label {
-        font-size: 0.75rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        color: var(--text-muted);
-        margin-bottom: 5px;
-        display: block;
-    }
-
-    .property-card {
-        border: 1px solid #eee;
-        background: #fff;
-    }
-
-    .compare-checkbox {
-        position: absolute;
-        top: 15px;
-        left: 15px;
-        z-index: 5;
-    }
-
-    .compare-badge {
-        background: rgba(0,0,0,0.6);
-        color: #fff;
-        padding: 4px 12px;
-        border-radius: 50px;
-        font-size: 0.75rem;
-        backdrop-filter: blur(4px);
-    }
+    /* Moved to index.css for better management and contrast fixes */
 </style>
 
-<div class="hero-section mb-5">
+<div class="hero-section mb-5 animate-fade-in">
     <div class="container">
-        <h1 class="display-3 fw-bold mb-3">Tìm kiếm <span class="text-danger">không gian</span> sống</h1>
-        <p class="lead text-muted mb-0">Hàng ngàn lựa chọn bất động sản phù hợp với phong cách của bạn.</p>
+        <h1 class="display-2 fw-bold mb-3">Tìm kiếm <span class="text-danger">không gian</span> sống</h1>
+        <p class="lead text-muted mb-4 mx-auto" style="max-width: 600px;">Hàng ngàn lựa chọn bất động sản hiện đại, tiện nghi và phù hợp với phong cách sống của bạn.</p>
+        <a href="#property-list" class="btn btn-premium px-5 py-3 shadow-lg">Khám phá ngay</a>
     </div>
 </div>
 
-<div class="container">
-    <div class="search-container mb-5">
+<div class="container" id="property-list">
+    <div class="search-container mb-5 glass-card animate-fade-in">
         <form asp-action="Index" method="get">
             <div class="row g-3">
                 <div class="col-md-4">
                     <label class="filter-label">Bạn muốn tìm gì?</label>
                     <div class="input-group">
-                        <span class="input-group-text bg-white border-0 text-danger"><i class="fas fa-search"></i></span>
-                        <input type="text" name="keyword" value="@ViewBag.Keyword" class="form-control border-0 shadow-none ps-0" placeholder="Từ khóa, tên phòng...">
+                        <span class="input-group-text bg-transparent border-0 text-danger"><i class="fas fa-search"></i></span>
+                        <input type="text" name="keyword" value="@ViewBag.Keyword" class="form-control border-0 shadow-none ps-0 bg-transparent" placeholder="Từ khóa, tên phòng...">
                     </div>
                 </div>
+                <!-- ... remains same structure for other fields but with better feel ... -->
                 <div class="col-md-3">
                     <label class="filter-label">Vị trí</label>
                     <div class="input-group">
-                        <span class="input-group-text bg-white border-0 text-danger"><i class="fas fa-map-marker-alt"></i></span>
-                        <input type="text" name="district" value="@ViewBag.District" class="form-control border-0 shadow-none ps-0" placeholder="Quận/Huyện">
+                        <span class="input-group-text bg-transparent border-0 text-danger"><i class="fas fa-map-marker-alt"></i></span>
+                        <input type="text" name="district" value="@ViewBag.District" class="form-control border-0 shadow-none ps-0 bg-transparent" placeholder="Quận/Huyện">
                     </div>
                 </div>
                 <div class="col-md-3">
                     <label class="filter-label">Loại tài sản</label>
                     <div class="input-group">
-                        <span class="input-group-text bg-white border-0 text-danger"><i class="fas fa-home"></i></span>
-                        <select name="propertyType" class="form-select border-0 shadow-none ps-0">
+                        <span class="input-group-text bg-transparent border-0 text-danger"><i class="fas fa-home"></i></span>
+                        <select name="propertyType" class="form-select border-0 shadow-none ps-0 bg-transparent">
                             <option value="">Tất cả</option>
                             <option value="House" selected="@(ViewBag.PropertyType == "House")">Nhà ở</option>
                             <option value="Land" selected="@(ViewBag.PropertyType == "Land")">Đất</option>
@@ -94,133 +48,218 @@
                     </div>
                 </div>
                 <div class="col-md-2">
-                    <button type="submit" class="btn btn-danger w-100 rounded-pill py-3 fw-bold mt-2">Tìm kiếm</button>
+                    <button type="submit" class="btn btn-premium w-100 py-3 mt-2">Tìm kiếm</button>
                 </div>
             </div>
             
-            <div class="row g-3 mt-2 pt-3 border-top">
+            <div class="row g-3 mt-2 pt-3 border-top align-items-center">
                 <div class="col-md-3">
                     <div class="d-flex align-items-center">
                         <span class="text-muted small me-2">Giá:</span>
-                        <input type="number" name="minPrice" value="@ViewBag.MinPrice" class="form-control form-control-sm border-0 border-bottom rounded-0 px-1 shadow-none" placeholder="Từ" style="width: 80px;">
+                        <input type="number" name="minPrice" value="@ViewBag.MinPrice" class="form-control form-control-sm border-0 border-bottom rounded-0 px-1 shadow-none bg-transparent" placeholder="Từ" style="width: 80px;">
                         <span class="mx-1 ms-2">-</span>
-                        <input type="number" name="maxPrice" value="@ViewBag.MaxPrice" class="form-control form-control-sm border-0 border-bottom rounded-0 px-1 shadow-none" placeholder="Đến" style="width: 80px;">
+                        <input type="number" name="maxPrice" value="@ViewBag.MaxPrice" class="form-control form-control-sm border-0 border-bottom rounded-0 px-1 shadow-none bg-transparent" placeholder="Đến" style="width: 80px;">
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="d-flex align-items-center">
                         <span class="text-muted small me-2">Diện tích:</span>
-                        <input type="number" name="minArea" value="@ViewBag.MinArea" class="form-control form-control-sm border-0 border-bottom rounded-0 px-1 shadow-none" placeholder="Từ" style="width: 60px;">
+                        <input type="number" name="minArea" value="@ViewBag.MinArea" class="form-control form-control-sm border-0 border-bottom rounded-0 px-1 shadow-none bg-transparent" placeholder="Từ" style="width: 60px;">
                         <span class="mx-2 ms-2">-</span>
-                        <input type="number" name="maxArea" value="@ViewBag.MaxArea" class="form-control form-control-sm border-0 border-bottom rounded-0 px-1 shadow-none" placeholder="Đến" style="width: 60px;">
+                        <input type="number" name="maxArea" value="@ViewBag.MaxArea" class="form-control form-control-sm border-0 border-bottom rounded-0 px-1 shadow-none bg-transparent" placeholder="Đến" style="width: 60px;">
                     </div>
                 </div>
-                <div class="col-md-6 text-end">
-                    <div class="btn-group">
-                        <a href="/" class="btn btn-link text-muted text-decoration-none small"><i class="fas fa-undo me-1"></i>Xóa lọc</a>
-                        <button type="button" class="btn btn-link text-danger text-decoration-none small ms-3" id="goCompareBtn">
-                            <i class="fas fa-exchange-alt me-1"></i>Xem so sánh
-                        </button>
+                <div class="col-md-2">
+                    <div class="d-flex align-items-center">
+                        <span class="text-muted small me-2">Phòng:</span>
+                        <input type="number" name="rooms" value="@ViewBag.Rooms" class="form-control form-control-sm border-0 border-bottom rounded-0 px-1 shadow-none bg-transparent" placeholder="≥" style="width: 40px;">
                     </div>
+                </div>
+                <div class="col-md-2">
+                    <select name="sortBy" class="form-select form-select-sm border-0 shadow-none bg-transparent small">
+                        <option value="newest" selected="@(ViewBag.SortBy == "newest")">Mới nhất</option>
+                        <option value="price_asc" selected="@(ViewBag.SortBy == "price_asc")">Giá ↑</option>
+                        <option value="price_desc" selected="@(ViewBag.SortBy == "price_desc")">Giá ↓</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-center justify-content-end p-0 pe-3">
+                    <a href="/" class="text-muted text-decoration-none small me-4" title="Đặt lại bộ lọc"><i class="fas fa-undo fs-5"></i></a>
+                    <span class="text-danger small cursor-pointer" id="goCompareBtn" title="So sánh phòng đã chọn">
+                        <i class="fas fa-exchange-alt fs-5"></i>
+                    </span>
                 </div>
             </div>
         </form>
     </div>
 
-    <div class="row g-4">
-        @foreach (var item in Model)
-        {
-            <div class="col-lg-4 col-md-6">
-                <div class="property-card h-100 position-relative">
-                    <!-- Compare Toggle -->
-                    <div class="form-check compare-checkbox">
-                        <input class="form-check-input compare-toggle" type="checkbox" value="@item.PropertyId" id="comp-@item.PropertyId">
-                        <label class="form-check-label compare-badge d-none" for="comp-@item.PropertyId">So sánh</label>
-                    </div>
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5 glass-card mb-5 animate-fade-in shadow-sm">
+            <div class="mb-4">
+                <i class="fas fa-search fa-4x text-muted opacity-25"></i>
+            </div>
+            <h3 class="fw-bold">Không tìm thấy phòng phù hợp</h3>
+            <p class="text-muted">Bạn hãy thử thay đổi bộ lọc hoặc từ khóa tìm kiếm nhé.</p>
+            <a href="/" class="btn btn-premium mt-3">Xem tất cả phòng</a>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4 mb-4">
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-4 col-md-6">
+                    <!-- ... property card ... -->
+                    <div class="property-card h-100 position-relative glass-card overflow-hidden">
+                        <div class="form-check compare-checkbox">
+                            <input class="form-check-input compare-toggle" type="checkbox" value="@item.PropertyId" id="comp-@item.PropertyId">
+                            <label class="form-check-label compare-badge d-none" for="comp-@item.PropertyId">Đã chọn</label>
+                        </div>
 
-                    @{
-                        var mainImg = item.ImagesProperties.FirstOrDefault(i => i.IsMain) ?? item.ImagesProperties.FirstOrDefault();
-                    }
-                    <div class="position-relative overflow-hidden" style="height: 240px;">
-                        <img src="@(mainImg?.ImageUrl ?? "/images/no-image.jpg")" class="w-100 h-100 object-fit-cover transition-transform" alt="Property">
                         @{
-                            bool isFav = ViewBag.FavoriteIds != null && ((List<int>)ViewBag.FavoriteIds).Contains(item.PropertyId);
+                            var mainImg = item.ImagesProperties.FirstOrDefault(i => i.IsMain) ?? item.ImagesProperties.FirstOrDefault();
                         }
-                        <button class="btn btn-light rounded-circle shadow-sm position-absolute top-0 end-0 m-3 p-0 d-flex align-items-center justify-content-center @(isFav ? "text-danger" : "text-muted")" 
-                                style="width: 40px; height: 40px; z-index: 5;" onclick="toggleFavorite(@item.PropertyId, this)">
-                            <i class="fas fa-heart"></i>
-                        </button>
-                    </div>
-
-                    <div class="p-4">
-                        <div class="text-danger small fw-bold mb-2">@item.PropertyType</div>
-                        <h5 class="fw-bold mb-3"><a asp-action="Details" asp-route-id="@item.PropertyId" class="text-dark text-decoration-none">@item.Title</a></h5>
-                        
-                        <div class="d-flex align-items-center text-muted small mb-3">
-                            <i class="fas fa-map-marker-alt text-danger me-2"></i>@item.District, @item.City
+                        <div class="position-relative overflow-hidden" style="height: 260px;">
+                            <img src="@(mainImg?.ImageUrl ?? "/images/no-image.jpg")" class="w-100 h-100 object-fit-cover" alt="Property">
+                            @{
+                                bool isFav = ViewBag.FavoriteIds != null && ((List<int>)ViewBag.FavoriteIds).Contains(item.PropertyId);
+                            }
+                            <button class="btn btn-light rounded-circle shadow-sm position-absolute top-0 end-0 m-3 p-0 d-flex align-items-center justify-content-center @(isFav ? "text-danger" : "text-muted")" 
+                                    style="width: 40px; height: 40px; z-index: 5; transition: all 0.2s;" onclick="toggleFavorite(@item.PropertyId, this)">
+                                <i class="fas fa-heart"></i>
+                            </button>
                         </div>
 
-                        <div class="row g-0 py-3 border-top border-bottom mb-3">
-                            <div class="col-4 border-end text-center">
-                                <div class="small text-muted"><i class="fas fa-bed me-1"></i>Phòng</div>
-                                <div class="fw-bold">@item.NumberOfRooms</div>
+                        <div class="p-4">
+                            <div class="text-danger small fw-bold mb-2">@item.PropertyType</div>
+                            <h5 class="fw-bold mb-3"><a asp-action="Details" asp-route-id="@item.PropertyId" class="text-dark text-decoration-none">@item.Title</a></h5>
+                            
+                            <div class="d-flex align-items-center text-muted small mb-3">
+                                <i class="fas fa-map-marker-alt text-danger me-2"></i>@item.District, @item.City
                             </div>
-                            <div class="col-4 border-end text-center">
-                                <div class="small text-muted"><i class="fas fa-expand me-1"></i>DT</div>
-                                <div class="fw-bold">@item.Area m²</div>
-                            </div>
-                            <div class="col-4 text-center">
-                                <div class="small text-muted"><i class="fas fa-star me-1 text-warning"></i>Vote</div>
-                                <div class="fw-bold">@(item.Reviews.Any() ? Math.Round(item.Reviews.Average(r => r.Rating), 1) : 0)</div>
-                            </div>
-                        </div>
 
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="fw-bold text-danger fs-5">@item.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</div>
-                            <a asp-action="Details" asp-route-id="@item.PropertyId" class="btn btn-outline-dark btn-sm rounded-pill px-3">Chi tiết</a>
+                            <div class="d-flex align-items-center gap-3 mb-3 text-muted small">
+                                <span><i class="fas fa-bed me-1 text-danger"></i>@item.NumberOfRooms phòng</span>
+                                <span><i class="fas fa-expand me-1 text-danger"></i>@item.Area m²</span>
+                                <span class="ms-auto fw-bold text-dark"><i class="fas fa-star me-1 text-warning"></i>@(item.Reviews.Any() ? Math.Round(item.Reviews.Average(r => r.Rating), 1) : 0)</span>
+                            </div>
+
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="fw-bold text-danger fs-5">@item.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</div>
+                                <a asp-action="Details" asp-route-id="@item.PropertyId" class="btn btn-outline-dark btn-sm rounded-pill px-4">Chi tiết</a>
+                            </div>
                         </div>
                     </div>
                 </div>
+            }
+        </div>
+
+        <!-- Simplified Pagination -->
+        @if (ViewBag.TotalPages > 1)
+        {
+            <div class="mt-5 mb-5 d-flex justify-content-center align-items-center animate-fade-in">
+                <div class="pagination-wrapper glass-card p-2 d-flex align-items-center shadow-sm">
+                    @if (ViewBag.CurrentPage > 1)
+                    {
+                        <a class="btn btn-light rounded-pill px-4 me-3 fw-bold border-0 shadow-none" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1, keyword = ViewBag.Keyword, district = ViewBag.District, propertyType = ViewBag.PropertyType, rooms = ViewBag.Rooms, minPrice = ViewBag.MinPrice, maxPrice = ViewBag.MaxPrice, minArea = ViewBag.MinArea, maxArea = ViewBag.MaxArea, sortBy = ViewBag.SortBy })">
+                            <i class="fas fa-arrow-left me-2 text-danger"></i> Trang trước
+                        </a>
+                    }
+                    else
+                    {
+                        <button class="btn btn-light rounded-pill px-4 me-3 fw-bold border-0 shadow-none opacity-50" disabled>
+                            <i class="fas fa-arrow-left me-2 text-muted"></i> Trang trước
+                        </button>
+                    }
+
+                    <div class="px-4 border-start border-end">
+                        <span class="fw-bold">Trang @ViewBag.CurrentPage / @ViewBag.TotalPages</span>
+                    </div>
+
+                    @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                    {
+                        <a class="btn btn-light rounded-pill px-4 ms-3 fw-bold border-0 shadow-none" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1, keyword = ViewBag.Keyword, district = ViewBag.District, propertyType = ViewBag.PropertyType, rooms = ViewBag.Rooms, minPrice = ViewBag.MinPrice, maxPrice = ViewBag.MaxPrice, minArea = ViewBag.MinArea, maxArea = ViewBag.MaxArea, sortBy = ViewBag.SortBy })">
+                            Trang sau <i class="fas fa-arrow-right ms-2 text-danger"></i>
+                        </a>
+                    }
+                    else
+                    {
+                        <button class="btn btn-light rounded-pill px-4 ms-3 fw-bold border-0 shadow-none opacity-50" disabled>
+                            Trang sau <i class="fas fa-arrow-right ms-2 text-muted"></i>
+                        </button>
+                    }
+                </div>
             </div>
         }
-    </div>
+    }
 </div>
+
+<!-- Floating Compare Button -->
+<a href="javascript:void(0)" id="fabCompare" class="fab-compare animate-slide-up">
+    <i class="fas fa-exchange-alt"></i> SO SÁNH NGAY <span class="badge-fab" id="fabCount">0</span>
+</a>
 
 @section Scripts {
     <script>
         $(document).ready(function() {
-            // Load selected comparison items from localStorage
-            let compareIds = JSON.parse(localStorage.getItem('compareIds') || '[]');
-            $('.compare-toggle').each(function() {
-                if (compareIds.includes($(this).val())) {
-                    $(this).prop('checked', true);
-                    $(this).next().removeClass('d-none');
+            const updateUI = () => {
+                let compareIds = JSON.parse(localStorage.getItem('compareIds') || '[]');
+                // Convert all to strings
+                compareIds = compareIds.map(id => id.toString());
+                
+                // Update checkboxes
+                $('.compare-toggle').each(function() {
+                    if (compareIds.includes($(this).val())) {
+                        $(this).prop('checked', true);
+                        $(this).next().removeClass('d-none');
+                    } else {
+                        $(this).prop('checked', false);
+                        $(this).next().addClass('d-none');
+                    }
+                });
+
+                // Update FAB
+                if (compareIds.length > 0) {
+                    $('#fabCount').text(compareIds.length);
+                    $('#fabCompare').css('display', 'flex');
+                } else {
+                    $('#fabCompare').hide();
                 }
-            });
+            };
+
+            updateUI();
 
             // Handle toggle
             $('.compare-toggle').on('change', function() {
-                const id = $(this).val();
+                const id = $(this).val().toString();
+                let compareIds = JSON.parse(localStorage.getItem('compareIds') || '[]');
+                compareIds = compareIds.map(i => i.toString());
+
                 if (this.checked) {
                     if (compareIds.length >= 3) {
-                        alert('Bạn chỉ có thể chọn tối đa 3 bất động sản để so sánh.');
+                        Swal.fire({
+                            title: 'Lưu ý!',
+                            text: 'Bạn chỉ có thể chọn tối đa 3 phòng để so sánh.',
+                            icon: 'warning',
+                            confirmButtonColor: '#ff385c'
+                        });
                         this.checked = false;
                         return;
                     }
                     if (!compareIds.includes(id)) compareIds.push(id);
-                    $(this).next().removeClass('d-none');
                 } else {
-                    compareIds = compareIds.filter(i => i != id);
-                    $(this).next().addClass('d-none');
+                    compareIds = compareIds.filter(i => i !== id);
                 }
+                
                 localStorage.setItem('compareIds', JSON.stringify(compareIds));
+                updateUI();
                 window.dispatchEvent(new Event('compareUpdated'));
             });
 
-            $('#goCompareBtn').on('click', function() {
+            $('#fabCompare, #goCompareBtn').on('click', function() {
                 const ids = JSON.parse(localStorage.getItem('compareIds') || '[]');
                 if (ids.length < 1) {
-                    Swal.fire('Lưu ý', 'Vui lòng chọn ít nhất 1 bất động sản để so sánh.', 'info');
+                    Swal.fire('Lưu ý', 'Vui lòng chọn ít nhất 1 phòng để so sánh.', 'info');
                     return;
                 }
                 window.location.href = '@Url.Action("Index", "Compare")?ids=' + ids.join(',');

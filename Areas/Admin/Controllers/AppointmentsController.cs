@@ -32,8 +32,8 @@ namespace DoAnWeb.Areas.Admin.Controllers
             if (!string.IsNullOrEmpty(search))
             {
                 var searchKey = search.Trim().ToLower();
-                query = query.Where(a => a.User.FullName.ToLower().Contains(searchKey) || 
-                                         a.Property.Title.ToLower().Contains(searchKey));
+                query = query.Where(a => a.User!.FullName!.ToLower().Contains(searchKey) || 
+                                         a.Property!.Title!.ToLower().Contains(searchKey));
             }
 
             var appointments = await query
@@ -62,8 +62,8 @@ namespace DoAnWeb.Areas.Admin.Controllers
             if (!string.IsNullOrEmpty(search))
             {
                 var searchKey = search.Trim().ToLower();
-                query = query.Where(a => a.User.FullName.ToLower().Contains(searchKey) || 
-                                         a.Property.Title.ToLower().Contains(searchKey));
+                query = query.Where(a => a.User!.FullName!.ToLower().Contains(searchKey) || 
+                                         a.Property!.Title!.ToLower().Contains(searchKey));
             }
 
             var appointments = await query

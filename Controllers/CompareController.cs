@@ -16,18 +16,36 @@ namespace DoAnWeb.Controllers
 
         public async Task<IActionResult> Index(string ids)
         {
-            if (string.IsNullOrEmpty(ids))
+            if (string.IsNullOrWhiteSpace(ids))
             {
                 return View(new List<Property>());
             }
 
-            var idList = ids.Split(',').Select(int.Parse).ToList();
-            var properties = await _context.Properties
-                .Include(p => p.ImagesProperties)
-                .Include(p => p.PropertyAmenities)
-                    .ThenInclude(pa => pa.Amenity)
-                .Where(p => idList.Contains(p.PropertyId))
-                .ToListAsync();
+            var idList = ids.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                           .Select(s => int.TryParse(s, out int id) ? id : 0)
+                           .Where(id => id > 0)
+                           .ToList();
+
+            if (!idList.Any())
+            {
+                return View(new List<Property>());
+            }
+
+            var properties = new List<Property>();
+            foreach (var id in idList)
+            {
+                var property = await _context.Properties
+                    .Include(p => p.ImagesProperties)
+                    .Include(p => p.PropertyAmenities)
+                        .ThenInclude(pa => pa.Amenity)
+                    .AsSplitQuery()
+                    .FirstOrDefaultAsync(p => p.PropertyId == id);
+                
+                if (property != null)
+                {
+                    properties.Add(property);
+                }
+            }
 
             return View(properties);
         }

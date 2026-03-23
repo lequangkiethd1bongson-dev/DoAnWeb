@@ -167,6 +167,26 @@ namespace DoAnWeb.Areas.Admin.Controllers
             return View(property);
         }
 
+        // GET: Admin/Properties/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var property = await _context.Properties
+                .Include(p => p.ImagesProperties)
+                .Include(p => p.PropertyAmenities)
+                    .ThenInclude(pa => pa.Amenity)
+                .Include(p => p.Reviews)
+                    .ThenInclude(r => r.User)
+                .Include(p => p.Appointments)
+                    .ThenInclude(a => a.User)
+                .FirstOrDefaultAsync(m => m.PropertyId == id);
+
+            if (property == null) return NotFound();
+
+            return View(property);
+        }
+
         // GET: Admin/Properties/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -184,13 +204,29 @@ namespace DoAnWeb.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var property = await _context.Properties.FindAsync(id);
+            var property = await _context.Properties
+                .Include(p => p.ImagesProperties)
+                .Include(p => p.PropertyAmenities)
+                .Include(p => p.Appointments)
+                .Include(p => p.Reviews)
+                .FirstOrDefaultAsync(p => p.PropertyId == id);
+
             if (property != null)
             {
+                // Xóa các file ảnh vật lý
+                foreach (var image in property.ImagesProperties)
+                {
+                    string filePath = Path.Combine(_hostEnvironment.WebRootPath, image.ImageUrl.TrimStart('/'));
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+                }
+
                 _context.Properties.Remove(property);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

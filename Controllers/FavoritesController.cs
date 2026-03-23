@@ -24,7 +24,7 @@ namespace DoAnWeb.Controllers
             var userId = _userManager.GetUserId(User);
             var favorites = await _context.Favorites
                 .Include(f => f.Property)
-                    .ThenInclude(p => p.ImagesProperties)
+                    .ThenInclude(p => p!.ImagesProperties)
                 .Where(f => f.UserId == userId)
                 .Select(f => f.Property)
                 .ToListAsync();

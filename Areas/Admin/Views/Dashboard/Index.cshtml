@@ -34,59 +34,70 @@
 </style>
 
 <div class="container-fluid py-4">
-    <div class="d-flex justify-content-between align-items-center mb-5">
-        <h2 class="fw-bold"><i class="fas fa-chart-line me-2 text-danger"></i>Trung tâm <span class="text-danger">Quản trị</span></h2>
-        <div class="text-muted small fw-bold">Hôm nay, @DateTime.Now.ToString("dd/MM/yyyy")</div>
+    <div class="d-flex justify-content-between align-items-center mb-5 animate-slide-up">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="fas fa-chart-line me-2 text-danger"></i>Trung tâm <span class="text-danger">Quản trị</span></h2>
+            <p class="text-muted small mb-0">Hôm nay, @DateTime.Now.ToString("dd/MM/yyyy") • Chào mừng trở lại, Admin!</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="/" target="_blank" class="btn btn-outline-dark rounded-pill px-4 shadow-sm"><i class="fas fa-external-link-alt me-2"></i>Xem Website</a>
+        </div>
     </div>
 
-    <div class="row g-4 mb-5">
+    <div class="row g-4 mb-5 animate-fade-in">
         <div class="col-md-3">
-            <div class="card card-stat p-4">
-                <div class="stat-icon bg-soft-red"><i class="fas fa-home"></i></div>
+            <div class="card card-stat glass-card p-4 border-0">
+                <div class="stat-icon bg-soft-red shadow-sm"><i class="fas fa-home"></i></div>
                 <h6 class="text-muted small text-uppercase fw-bold mb-1">Tổng tài sản</h6>
                 <h3 class="fw-bold mb-0">@ViewBag.TotalProperties</h3>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card card-stat p-4">
-                <div class="stat-icon bg-soft-red"><i class="fas fa-calendar-alt"></i></div>
+            <div class="card card-stat glass-card p-4 border-0">
+                <div class="stat-icon bg-soft-red shadow-sm"><i class="fas fa-calendar-alt"></i></div>
                 <h6 class="text-muted small text-uppercase fw-bold mb-1">Tổng lịch hẹn</h6>
                 <h3 class="fw-bold mb-0">@ViewBag.TotalAppointments</h3>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card card-stat p-4">
-                <div class="stat-icon bg-soft-red"><i class="fas fa-clock"></i></div>
+            <div class="card card-stat glass-card p-4 border-0">
+                <div class="stat-icon bg-soft-red shadow-sm"><i class="fas fa-clock"></i></div>
                 <h6 class="text-muted small text-uppercase fw-bold mb-1">Đang chờ duyệt</h6>
                 <h3 class="fw-bold mb-0 text-danger">@ViewBag.PendingAppointments</h3>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card card-stat p-4">
-                <div class="stat-icon bg-soft-red"><i class="fas fa-eye"></i></div>
-                <h6 class="text-muted small text-uppercase fw-bold mb-1">Tổng lượt xem</h6>
+            <div class="card card-stat glass-card p-4 border-0">
+                <div class="stat-icon bg-soft-red shadow-sm"><i class="fas fa-eye"></i></div>
+                <h6 class="text-muted small text-uppercase fw-bold mb-1">Lượt xem hệ thống</h6>
                 <h3 class="fw-bold mb-0">@ViewBag.TotalViews</h3>
             </div>
         </div>
     </div>
 
-    <div class="row g-4 mb-4">
+    <div class="row g-4 mb-4 animate-fade-in">
         <div class="col-lg-8">
-            <div class="card card-stat p-4 mb-4">
-                <h5 class="fw-bold mb-4">Biểu đồ lịch hẹn (7 ngày qua)</h5>
-                <canvas id="appointmentChart" style="max-height: 300px;"></canvas>
+            <div class="card card-stat glass-card p-4 mb-4 border-0">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">Lưu lượng Lịch hẹn (7 ngày qua)</h5>
+                    <div class="small text-muted fw-bold">Dữ liệu thời gian thực</div>
+                </div>
+                <canvas id="appointmentChart" style="max-height: 280px;"></canvas>
             </div>
 
-            <div class="card card-stat p-4">
-                <h5 class="fw-bold mb-4"><i class="fas fa-medal text-warning me-2"></i>Top Buyer Intent</h5>
+            <div class="card card-stat glass-card p-4 border-0">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0"><i class="fas fa-fire me-2 text-danger"></i>Top Quan tâm (Buyer Intent)</h5>
+                    <a asp-action="Index" asp-controller="Properties" class="btn btn-sm btn-link text-danger text-decoration-none fw-bold">Xem tất cả</a>
+                </div>
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
+                    <table class="table table-hover align-middle mb-0 border-0">
                         <thead>
-                            <tr class="small text-uppercase text-muted">
-                                <th>Bất động sản</th>
-                                <th>Lượt yêu thích</th>
-                                <th>Giá</th>
-                                <th>Thao tác</th>
+                            <tr class="small text-uppercase text-muted border-0">
+                                <th class="border-0">Bất động sản</th>
+                                <th class="border-0">Yêu thích</th>
+                                <th class="border-0">Giá thuê</th>
+                                <th class="text-end border-0">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -94,14 +105,16 @@
                             {
                                 foreach (var item in topBuyerIntent)
                                 {
-                                    <tr>
-                                        <td>
-                                            <div class="fw-bold">@item.Property.Title</div>
-                                            <div class="small text-muted">@item.Property.District, @item.Property.City</div>
+                                    <tr class="border-bottom-0">
+                                        <td class="py-3">
+                                            <div class="fw-bold text-dark">@item.Property.Title</div>
+                                            <div class="small text-muted"><i class="fas fa-map-marker-alt me-1"></i> @item.Property.District</div>
                                         </td>
-                                        <td><span class="badge bg-soft-red rounded-pill px-3">@item.FavCount ❤️</span></td>
+                                        <td><span class="badge bg-soft-red rounded-pill px-3 py-2 text-danger fw-bold" style="font-size: 0.7rem;">@item.FavCount <i class="fas fa-heart ms-1"></i></span></td>
                                         <td class="text-danger fw-bold">@item.Property.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</td>
-                                        <td><a href="/Admin/Properties/Details/@item.Property.PropertyId" class="btn btn-sm btn-light rounded-pill px-3">Xem</a></td>
+                                        <td class="text-end">
+                                            <a href="/Admin/Properties/Details/@item.Property.PropertyId" class="btn btn-sm btn-light rounded-pill px-3 shadow-sm fw-bold">Quản lý</a>
+                                        </td>
                                     </tr>
                                 }
                             }
@@ -111,38 +124,39 @@
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="card card-stat h-100 p-4">
-                <h5 class="fw-bold mb-4">BĐS Hot nhất</h5>
+            <div class="card card-stat glass-card h-100 p-4 border-0">
+                <h5 class="fw-bold mb-4 border-bottom pb-3">Bất động sản <span class="text-danger">Hot nhất</span></h5>
                 @if (hotProp != null)
                 {
-                    <div class="text-center">
-                        <div class="position-relative mb-3">
-                            <img src="@(hotProp.ImagesProperties.FirstOrDefault(i => i.IsMain)?.ImageUrl ?? hotProp.ImagesProperties.FirstOrDefault()?.ImageUrl)" 
-                                 class="rounded-4 w-100 shadow-sm" style="height: 220px; object-fit: cover;">
-                            <div class="position-absolute top-0 end-0 m-2">
-                                <span class="badge bg-danger rounded-pill px-3">@ViewBag.HotPropertyFavCount <i class="fas fa-heart ms-1"></i></span>
+                    <div class="text-center pt-2">
+                        <div class="position-relative mb-4 overflow-hidden rounded-4 shadow-sm group">
+                            <img src="@(hotProp.ImagesProperties.FirstOrDefault(i => i.IsMain)?.ImageUrl ?? hotProp.ImagesProperties.FirstOrDefault()?.ImageUrl ?? "/images/no-image.jpg")" 
+                                 class="w-100 property-thumb" style="height: 250px; object-fit: cover;">
+                            <div class="position-absolute top-0 end-0 m-3">
+                                <span class="badge bg-danger rounded-pill px-3 py-2 shadow fw-bold">@ViewBag.HotPropertyFavCount <i class="fas fa-heart ms-1"></i></span>
                             </div>
                         </div>
                         <h5 class="fw-bold mb-2">@hotProp.Title</h5>
-                        <p class="text-danger fw-bold h4 mb-3">@hotProp.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</p>
-                        <div class="d-flex justify-content-center gap-4 mb-4 text-muted small">
-                            <span><i class="fas fa-eye me-1"></i> @hotProp.ViewCount xem</span>
-                            <span><i class="fas fa-map-marker-alt me-1"></i> @hotProp.District</span>
+                        <p class="text-danger fw-bold h3 mb-4">@hotProp.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</p>
+                        <div class="d-flex justify-content-center gap-4 mb-5 text-muted fw-bold small text-uppercase letter-spacing-1">
+                            <span><i class="fas fa-eye me-1"></i> @hotProp.ViewCount views</span>
+                            <span><i class="fas fa-th-large me-1"></i> @hotProp.Area m²</span>
                         </div>
-                        <a asp-action="Details" asp-controller="Properties" asp-route-id="@hotProp.PropertyId" class="btn btn-danger rounded-pill w-100 py-3 fw-bold shadow">QUẢN LÝ NIÊM YẾT</a>
+                        <a asp-action="Details" asp-controller="Properties" asp-route-id="@hotProp.PropertyId" class="btn btn-premium w-100 py-3 shadow-sm">QUẢN LÝ NIÊM YẾT</a>
                     </div>
                 }
                 else
                 {
                     <div class="text-center py-5 opacity-25">
                         <i class="fas fa-box-open fa-4x mb-3"></i>
-                        <p class="fst-italic">Chưa có dữ liệu hot</p>
+                        <p class="fst-italic fw-bold">Dữ liệu đang được cập nhật...</p>
                     </div>
                 }
             </div>
         </div>
     </div>
 </div>
+
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

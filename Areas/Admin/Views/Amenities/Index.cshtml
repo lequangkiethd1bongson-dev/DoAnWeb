@@ -1,48 +1,52 @@
 @model IEnumerable<DoAnWeb.Models.Amenity>
 
 @{
-    ViewData["Title"] = "Quản lý tiện ích";
-    Layout = "_Layout";
+    ViewData["Title"] = "Quản lý tiện ích - Admin";
 }
 
 <div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold"><i class="fas fa-list me-2 text-danger"></i>Quản lý tiện ích</h2>
-        <a asp-action="Create" class="btn btn-danger rounded-pill px-4"><i class="fas fa-plus me-2"></i>Thêm tiện ích mới</a>
+    <div class="d-flex justify-content-between align-items-center mb-5 animate-slide-up">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="fas fa-concierge-bell me-2 text-danger"></i>Quản lý <span class="text-danger">Tiện ích</span></h2>
+            <p class="text-muted small mb-0">Danh sách các tiện ích có sẵn cho bất động sản.</p>
+        </div>
+        <a asp-action="Create" class="btn btn-premium px-4 shadow-sm"><i class="fas fa-plus me-2"></i>Thêm tiện ích</a>
     </div>
 
-    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden animate-fade-in">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
-                <thead class="bg-light">
-                    <tr>
-                        <th class="ps-4">Icon</th>
-                        <th>Tên tiện ích</th>
-                        <th>Mã Icon (FA)</th>
-                        <th class="text-end pe-4">Thao tác</th>
+                <thead class="bg-light border-0">
+                    <tr class="text-muted small text-uppercase fw-bold border-0">
+                        <th class="ps-4 py-3 border-0">Biểu tượng</th>
+                        <th class="py-3 border-0">Tên tiện ích</th>
+                        <th class="py-3 border-0">Mã Class Icon</th>
+                        <th class="text-end pe-4 py-3 border-0">Thao tác</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="border-0">
                     @foreach (var item in Model)
                     {
-                        <tr>
-                            <td class="ps-4">
-                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center text-danger" style="width: 40px; height: 40px;">
-                                    <i class="@item.Icon fa-lg"></i>
+                        <tr class="border-bottom">
+                            <td class="ps-4 py-3">
+                                <div class="bg-soft-red text-danger rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px; border: 1px solid rgba(255, 56, 92, 0.1);">
+                                    <i class="@item.Icon fs-5"></i>
                                 </div>
                             </td>
-                            <td class="fw-bold">@item.Name</td>
-                            <td><code class="text-muted">@item.Icon</code></td>
+                            <td class="fw-bold text-dark">@item.Name</td>
+                            <td><code class="px-2 py-1 bg-light rounded text-muted small">@item.Icon</code></td>
                             <td class="text-end pe-4">
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning rounded-circle me-1">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline delete-form">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn action-btn btn-light rounded-circle shadow-sm" title="Chỉnh sửa">
+                                        <i class="fas fa-edit text-warning"></i>
+                                    </a>
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline delete-form">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn action-btn btn-light rounded-circle shadow-sm" title="Xóa">
+                                            <i class="fas fa-trash text-danger"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     }
@@ -50,7 +54,10 @@
                     {
                         <tr>
                             <td colspan="4" class="text-center py-5 text-muted">
-                                Chưa có tiện ích nào. Hãy thêm mới!
+                                <div class="py-4 opacity-50">
+                                    <i class="fas fa-layer-group fa-3x mb-3"></i>
+                                    <p class="fst-italic">Chưa có tiện ích nào được tạo.</p>
+                                </div>
                             </td>
                         </tr>
                     }
@@ -60,6 +67,11 @@
     </div>
 </div>
 
+<style>
+    .action-btn { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+    .action-btn:hover { transform: translateY(-3px); }
+</style>
+
 @section Scripts {
     <script>
         $('.delete-form').on('submit', function(e) {
@@ -67,12 +79,12 @@
             const form = this;
             Swal.fire({
                 title: 'Xóa tiện ích?',
-                text: "Các phòng đang gán tiện ích này sẽ bị mất thông tin tiện ích này hoàn toàn!",
+                text: "Dữ liệu gán tiện ích này vào các phòng sẽ bị gỡ bỏ hoàn toàn!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#ff385c',
                 cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Đồng ý xóa',
+                confirmButtonText: 'Xác nhận xóa',
                 cancelButtonText: 'Hủy'
             }).then((result) => {
                 if (result.isConfirmed) {

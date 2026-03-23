@@ -1,0 +1,173 @@
+@model DoAnWeb.Models.Property
+
+@{
+    ViewData["Title"] = "Chi tiết niêm yết - Admin";
+    var mainImage = Model.ImagesProperties.FirstOrDefault(i => i.IsMain) ?? Model.ImagesProperties.FirstOrDefault();
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-1">
+                    <li class="breadcrumb-item"><a asp-action="Index" class="text-muted text-decoration-none">Quản lý niêm yết</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Chi tiết</li>
+                </ol>
+            </nav>
+            <h2 class="fw-bold mb-0">Niêm yết: <span class="text-danger">#@Model.PropertyId</span></h2>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="/" target="_blank" class="btn btn-outline-dark rounded-pill px-4"><i class="fas fa-external-link-alt me-2"></i>Xem công khai</a>
+            <a asp-action="Edit" asp-route-id="@Model.PropertyId" class="btn btn-warning rounded-pill px-4 text-white"><i class="fas fa-edit me-2"></i>Chỉnh sửa</a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Left Column: Media & Info -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+                <div class="position-relative">
+                    <img src="@(mainImage?.ImageUrl ?? "/images/no-image.jpg")" class="w-100" style="height: 450px; object-fit: cover;" />
+                    <div class="position-absolute bottom-0 start-0 w-100 p-4" style="background: linear-gradient(transparent, rgba(0,0,0,0.7));">
+                        <h3 class="text-white fw-bold mb-1">@Model.Title</h3>
+                        <p class="text-white-50 mb-0"><i class="fas fa-map-marker-alt me-2"></i>@Model.Address, @Model.District, @Model.City</p>
+                    </div>
+                </div>
+                <div class="card-body p-4 bg-white">
+                    <div class="row text-center border-bottom pb-4 mb-4">
+                        <div class="col-3 border-end">
+                            <div class="small text-muted text-uppercase fw-bold mb-1">Giá thuê</div>
+                            <div class="h5 fw-bold text-danger mb-0">@Model.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</div>
+                        </div>
+                        <div class="col-3 border-end">
+                            <div class="small text-muted text-uppercase fw-bold mb-1">Diện tích</div>
+                            <div class="h5 fw-bold mb-0">@Model.Area m²</div>
+                        </div>
+                        <div class="col-3 border-end">
+                            <div class="small text-muted text-uppercase fw-bold mb-1">Số phòng</div>
+                            <div class="h5 fw-bold mb-0">@Model.NumberOfRooms</div>
+                        </div>
+                        <div class="col-3">
+                            <div class="small text-muted text-uppercase fw-bold mb-1">Lượt xem</div>
+                            <div class="h5 fw-bold mb-0">@Model.ViewCount</div>
+                        </div>
+                    </div>
+
+                    <h5 class="fw-bold mb-4">Mô tả niêm yết</h5>
+                    <p class="text-muted" style="white-space: pre-line; line-height: 1.8;">@Model.Description</p>
+                    
+                    <h5 class="fw-bold mt-5 mb-4 border-bottom pb-2">Tiện ích</h5>
+                    <div class="row g-3">
+                        @foreach (var pa in Model.PropertyAmenities)
+                        {
+                            <div class="col-md-3 col-6">
+                                <div class="p-3 bg-light rounded-4 d-flex align-items-center h-100">
+                                    <i class="@(pa.Amenity?.Icon ?? "fas fa-check") text-danger me-3 fs-5"></i>
+                                    <span class="small fw-bold">@pa.Amenity?.Name</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Photos Gallery -->
+            <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                <h5 class="fw-bold mb-4">Tất cả hình ảnh (@Model.ImagesProperties.Count)</h5>
+                <div class="row g-3">
+                    @foreach (var img in Model.ImagesProperties)
+                    {
+                        <div class="col-md-3 col-6">
+                            <div class="position-relative">
+                                <img src="@img.ImageUrl" class="w-100 rounded-3 shadow-sm" style="height: 120px; object-fit: cover;" />
+                                @if (img.IsMain)
+                                {
+                                    <span class="badge bg-danger position-absolute top-0 start-0 m-2 shadow-sm">Main</span>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Status & Recent Activity -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                <h5 class="fw-bold mb-4">Trạng thái hiện tại</h5>
+                <div class="mb-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="p-3 rounded-circle bg-soft-red text-danger me-3" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-toggle-on fs-5"></i>
+                        </div>
+                        <div>
+                            <div class="small text-muted text-uppercase fw-bold">Tình trạng</div>
+                            <div class="h5 fw-bold mb-0">@Model.Status</div>
+                        </div>
+                    </div>
+                    <select class="form-select status-toggle rounded-pill border-0 bg-light px-3 py-2 shadow-none" data-id="@Model.PropertyId">
+                        <option value="Available" selected="@(Model.Status == "Available")">Available</option>
+                        <option value="Pending" selected="@(Model.Status == "Pending")">Pending</option>
+                        <option value="Sold" selected="@(Model.Status == "Sold")">Sold</option>
+                    </select>
+                </div>
+                <hr>
+                <div class="small text-muted text-uppercase fw-bold mb-3">Thông tin bổ sung</div>
+                <p class="mb-1"><strong>Loại:</strong> @Model.PropertyType</p>
+                <p class="mb-1"><strong>Ngày tạo:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
+                <p class="mb-0"><strong>Lượt đánh giá:</strong> @Model.Reviews.Count (@(Model.Reviews.Any() ? Model.Reviews.Average(r => r.Rating).ToString("0.0") : "0.0") <i class="fas fa-star text-warning small"></i>)</p>
+            </div>
+
+            <!-- Recent Appointments -->
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <h5 class="fw-bold mb-4">Lịch hẹn gần đây (@Model.Appointments.Count)</h5>
+                @if (Model.Appointments.Any())
+                {
+                    <div class="timeline">
+                        @foreach (var app in Model.Appointments.OrderByDescending(a => a.AppointmentDate).Take(5))
+                        {
+                            <div class="pb-3 border-bottom mb-3 last-child-border-0">
+                                <div class="d-flex justify-content-between align-items-start mb-1">
+                                    <div class="fw-bold small">@app.User?.FullName</div>
+                                    <span class="badge @(app.Status == "Approved" ? "bg-success" : "bg-warning") rounded-pill" style="font-size: 0.6rem;">@app.Status</span>
+                                </div>
+                                <div class="small text-muted"><i class="far fa-calendar-alt me-1"></i> @app.AppointmentDate.ToString("dd/MM/yyyy HH:mm")</div>
+                            </div>
+                        }
+                    </div>
+                    <a asp-controller="Appointments" asp-action="Index" asp-route-search="@Model.PropertyId" class="btn btn-light w-100 rounded-pill btn-sm mt-2">Xem tất cả lịch hẹn</a>
+                }
+                else
+                {
+                    <p class="text-muted small fst-italic mb-0">Chưa có lịch hẹn nào.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-soft-red { background: rgba(255, 56, 92, 0.1); }
+    .last-child-border-0:last-child { border-bottom: none !important; margin-bottom: 0 !important; padding-bottom: 0 !important; }
+</style>
+
+@section Scripts {
+    <script>
+        $('.status-toggle').on('change', function() {
+            const propertyId = $(this).data('id');
+            const newStatus = $(this).val();
+            $.post('/Admin/Properties/UpdateStatus', { id: propertyId, status: newStatus }, function(res) {
+                if(res.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Đã cập nhật trạng thái',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                }
+            });
+        });
+    </script>
+}

@@ -47,7 +47,7 @@ namespace DoAnWeb.Areas.Admin.Controllers
                 .OrderByDescending(g => g.Count())
                 .Take(5)
                 .Select(g => new { 
-                    Property = _context.Properties.FirstOrDefault(p => p.PropertyId == g.Key),
+                    Property = _context.Properties.Include(p => p.ImagesProperties).FirstOrDefault(p => p.PropertyId == g.Key),
                     FavCount = g.Count()
                 })
                 .ToListAsync();

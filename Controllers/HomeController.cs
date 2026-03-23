@@ -15,14 +15,16 @@ namespace DoAnWeb.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string? keyword, string? city, string? district, string? propertyType, int? rooms, decimal? minPrice, decimal? maxPrice, double? minArea, double? maxArea, string? sortBy)
+        public async Task<IActionResult> Index(string? keyword, string? city, string? district, string? propertyType, int? rooms, decimal? minPrice, decimal? maxPrice, double? minArea, double? maxArea, string? sortBy, int? page)
         {
             var query = _context.Properties
                 .Include(p => p.ImagesProperties)
                 .Include(p => p.Reviews)
+                .AsSplitQuery()
                 .Where(p => p.Status == "Available")
                 .AsQueryable();
 
+            // ... (rest of filtering logic remains same)
             // Lọc theo từ khóa (Tiêu đề hoặc Mô tả)
             if (!string.IsNullOrEmpty(keyword))
             {
@@ -30,18 +32,11 @@ namespace DoAnWeb.Controllers
                 query = query.Where(p => p.Title.ToLower().Contains(searchKey) || (p.Description != null && p.Description.ToLower().Contains(searchKey)));
             }
 
-            // Lọc theo thành phố
-            if (!string.IsNullOrEmpty(city))
+            // Lọc theo thành phố hoặc quận/huyện (Vị trí)
+            if (!string.IsNullOrEmpty(city) || !string.IsNullOrEmpty(district))
             {
-                var searchCity = city.Trim().ToLower();
-                query = query.Where(p => p.City.ToLower().Contains(searchCity));
-            }
-
-            // Lọc theo quận/huyện
-            if (!string.IsNullOrEmpty(district))
-            {
-                var searchDistrict = district.Trim().ToLower();
-                query = query.Where(p => p.District.ToLower().Contains(searchDistrict));
+                var searchLoc = (city ?? district ?? "").Trim().ToLower();
+                query = query.Where(p => p.City.ToLower().Contains(searchLoc) || p.District.ToLower().Contains(searchLoc));
             }
 
             // Lọc theo loại bất động sản
@@ -73,7 +68,16 @@ namespace DoAnWeb.Controllers
                 _ => query.OrderByDescending(p => p.CreatedAt) // Mặc định tin mới nhất
             };
 
-            var properties = await query.ToListAsync();
+            // Pagination logic
+            int pageSize = 6;
+            int currentPage = page ?? 1;
+            int totalItems = await query.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var properties = await query
+                .Skip((currentPage - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
             
             var userName = User.Identity?.Name;
             var user = userName != null ? await _context.Users.FirstOrDefaultAsync(u => u.UserName == userName) : null;
@@ -89,7 +93,7 @@ namespace DoAnWeb.Controllers
                 ViewBag.FavoriteIds = new List<int>();
             }
 
-            // Gửi lại các giá trị lọc để hiển thị trên form
+            // Gửi lại các giá trị lọc để hiển thị trên form và pagination
             ViewBag.Keyword = keyword;
             ViewBag.City = city;
             ViewBag.District = district;
@@ -100,6 +104,9 @@ namespace DoAnWeb.Controllers
             ViewBag.MinArea = minArea;
             ViewBag.MaxArea = maxArea;
             ViewBag.SortBy = sortBy;
+            
+            ViewBag.CurrentPage = currentPage;
+            ViewBag.TotalPages = totalPages;
 
             return View(properties);
         }

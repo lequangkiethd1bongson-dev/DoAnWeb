@@ -2,10 +2,14 @@
 
 @{
     ViewData["Title"] = "So sánh bất động sản";
-    var amenities = Model.SelectMany(p => p.PropertyAmenities.Select(pa => pa.Amenity)).DistinctBy(a => a.Id).ToList();
+    var amenities = Model.SelectMany(p => p.PropertyAmenities)
+                         .Select(pa => pa.Amenity)
+                         .Where(a => a != null)
+                         .DistinctBy(a => a!.Id)
+                         .ToList();
 }
 
-<div class="container py-5">
+<div class="container py-5 animate-fade-in">
     <div class="d-flex justify-content-between align-items-center mb-5">
         <h2 class="fw-bold mb-0">So sánh <span class="text-danger">bất động sản</span></h2>
         <a asp-controller="Home" asp-action="Index" class="btn btn-outline-dark rounded-pill px-4">Tiếp tục chọn</a>
@@ -87,7 +91,7 @@
                         @foreach (var am in amenities)
                         {
                             <tr>
-                                <td class="text-start ps-4 fw-bold"><i class="@am.Icon me-2 text-muted"></i>@am.Name</td>
+                                <td class="text-start ps-4 fw-bold"><i class="@am!.Icon me-2 text-muted"></i>@am!.Name</td>
                                 @foreach (var item in Model)
                                 {
                                     <td>
