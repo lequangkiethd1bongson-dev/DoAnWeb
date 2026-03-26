@@ -8,20 +8,20 @@
     <div class="d-flex justify-content-between align-items-center mb-5 animate-slide-up">
         <div>
             <h2 class="fw-bold mb-1"><i class="fas fa-concierge-bell me-2 text-danger"></i>Quản lý <span class="text-danger">Tiện ích</span></h2>
-            <p class="text-muted small mb-0">Danh sách các tiện ích có sẵn cho bất động sản.</p>
+            <p class="text-muted small mb-0">Thiết lập và quản lý các tiện ích nổi bật cho các bất động sản của bạn.</p>
         </div>
         <a asp-action="Create" class="btn btn-premium px-4 shadow-sm"><i class="fas fa-plus me-2"></i>Thêm tiện ích</a>
     </div>
 
-    <div class="card border-0 shadow-sm rounded-4 overflow-hidden animate-fade-in">
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden animate-fade-in p-4 bg-white">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table id="amenitiesTable" class="table table-hover align-middle mb-0 w-100">
                 <thead class="bg-light border-0">
                     <tr class="text-muted small text-uppercase fw-bold border-0">
                         <th class="ps-4 py-3 border-0">Biểu tượng</th>
                         <th class="py-3 border-0">Tên tiện ích</th>
                         <th class="py-3 border-0">Mã Class Icon</th>
-                        <th class="text-end pe-4 py-3 border-0">Thao tác</th>
+                        <th class="text-end pe-4 py-3 border-0" data-orderable="false">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody class="border-0">
@@ -50,17 +50,6 @@
                             </td>
                         </tr>
                     }
-                    @if (!Model.Any())
-                    {
-                        <tr>
-                            <td colspan="4" class="text-center py-5 text-muted">
-                                <div class="py-4 opacity-50">
-                                    <i class="fas fa-layer-group fa-3x mb-3"></i>
-                                    <p class="fst-italic">Chưa có tiện ích nào được tạo.</p>
-                                </div>
-                            </td>
-                        </tr>
-                    }
                 </tbody>
             </table>
         </div>
@@ -74,22 +63,37 @@
 
 @section Scripts {
     <script>
-        $('.delete-form').on('submit', function(e) {
-            e.preventDefault();
-            const form = this;
-            Swal.fire({
-                title: 'Xóa tiện ích?',
-                text: "Dữ liệu gán tiện ích này vào các phòng sẽ bị gỡ bỏ hoàn toàn!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#ff385c',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Xác nhận xóa',
-                cancelButtonText: 'Hủy'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
+        $(document).ready(function() {
+            var table = $('#amenitiesTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/vi.json"
+                },
+                "order": [[1, 'asc']],
+                "columnDefs": [
+                    { "orderable": false, "targets": [0, 3] }
+                ],
+                "pageLength": 10,
+                "responsive": true,
+                "dom": '<"d-flex justify-content-between align-items-center mb-3"f>rt<"d-flex justify-content-between align-items-center mt-3"ip>'
+            });
+
+            $('.delete-form').on('submit', function(e) {
+                e.preventDefault();
+                const form = this;
+                Swal.fire({
+                    title: 'Xóa tiện ích?',
+                    text: "Dữ liệu gán tiện ích này vào các phòng sẽ bị gỡ bỏ hoàn toàn!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ff385c',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Xác nhận xóa',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
             });
         });
     </script>

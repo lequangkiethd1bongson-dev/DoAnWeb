@@ -333,3 +333,81 @@ body {
 .star-rating label:hover ~ label {
     color: #ffc107 !important;
 }
+/* DataTables Premium Admin Styling */
+.dataTables_wrapper .dataTables_filter {
+    float: none;
+    text-align: left;
+    margin-bottom: 2rem;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 50px;
+    padding: 10px 20px 10px 40px;
+    background-color: #f8f9fa;
+    width: 300px;
+    transition: var(--transition-smooth);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23717171' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 15px center;
+}
+
+.dataTables_wrapper .dataTables_filter input:focus {
+    width: 350px;
+    background-color: white;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    border-color: var(--primary-red);
+    outline: none;
+}
+
+.dataTables_wrapper .dataTables_length select {
+    border-radius: 50px;
+    padding: 5px 15px;
+    border: 1px solid rgba(0,0,0,0.08);
+    margin: 0 10px;
+}
+
+.dataTables_wrapper .dataTables_info {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.dataTables_wrapper .dataTables_paginate {
+    margin-top: 1.5rem;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    border-radius: 50px !important;
+    border: none !important;
+    padding: 8px 16px !important;
+    margin: 0 2px !important;
+    font-weight: 600 !important;
+    transition: var(--transition-smooth) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: var(--primary-gradient) !important;
+    color: white !important;
+    box-shadow: 0 5px 15px rgba(255, 56, 92, 0.3) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover:not(.current) {
+    background: #f8f9fa !important;
+    color: var(--primary-red) !important;
+}
+
+table.dataTable thead th {
+    border-bottom: 2px solid #f8f9fa !important;
+    padding: 1.2rem 1rem !important;
+}
+
+table.dataTable.no-footer {
+    border-bottom: 1px solid #f8f9fa !important;
+}
+
+.dataTables_empty {
+    padding: 3rem !important;
+    font-style: fst-italic;
+    color: var(--text-muted);
+}

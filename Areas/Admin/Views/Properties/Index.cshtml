@@ -18,21 +18,21 @@
     <div class="d-flex justify-content-between align-items-center mb-5 animate-slide-up">
         <div>
             <h2 class="fw-bold mb-1"><i class="fas fa-city me-2 text-danger"></i>Quản lý <span class="text-danger">Niêm yết</span></h2>
-            <p class="text-muted small mb-0">Hệ thống đang quản lý @Model.Count() bất động sản.</p>
+            <p class="text-muted small mb-0">Theo dõi, chỉnh sửa và cập nhật trạng thái các danh mục phòng trọ, căn hộ.</p>
         </div>
         <a asp-action="Create" class="btn btn-premium px-4"><i class="fas fa-plus me-2"></i>Thêm tài sản mới</a>
     </div>
 
-    <div class="card border-0 shadow-sm rounded-4 overflow-hidden animate-fade-in">
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden animate-fade-in p-4 bg-white">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table id="propertiesTable" class="table table-hover align-middle mb-0 w-100">
                 <thead class="bg-light border-0">
                     <tr class="text-muted small text-uppercase fw-bold border-0">
                         <th class="ps-4 py-3 border-0">Thông tin cơ bản</th>
                         <th class="py-3 border-0">Vị trí & Loại</th>
                         <th class="py-3 border-0">Giá & Diện tích</th>
                         <th class="py-3 border-0">Trạng thái</th>
-                        <th class="text-end pe-4 py-3 border-0">Thao tác</th>
+                        <th class="text-end pe-4 py-3 border-0" data-orderable="false">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody class="border-0">
@@ -122,7 +122,21 @@
         }
 
         $(document).ready(function() {
-            $('.status-toggle').on('change', function() {
+            var table = $('#propertiesTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/vi.json"
+                },
+                "order": [[0, 'desc']],
+                "columnDefs": [
+                    { "orderable": false, "targets": [4] }
+                ],
+                "pageLength": 10,
+                "responsive": true,
+                "dom": '<"d-flex justify-content-between align-items-center mb-3"f>rt<"d-flex justify-content-between align-items-center mt-3"ip>'
+            });
+
+            // Use event delegation for status-toggle as DataTable redraws the table
+            $(document).on('change', '.status-toggle', function() {
                 const propertyId = $(this).data('id');
                 const newStatus = $(this).val();
                 const $select = $(this);

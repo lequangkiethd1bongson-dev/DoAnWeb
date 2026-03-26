@@ -4,71 +4,143 @@
     ViewData["Title"] = "Lịch đặt của tôi";
 }
 
-<h2 class="fw-bold mb-4">Danh sách lịch hẹn đã đặt</h2>
-
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["SuccessMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-5 animate-slide-up">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="fas fa-calendar-alt me-2 text-danger"></i>Lịch xem <span class="text-danger">Phòng của tôi</span></h2>
+            <p class="text-muted small mb-0">Theo dõi trạng thái các cuộc hẹn xem bất động sản bạn đã đăng ký.</p>
+        </div>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-dark rounded-pill px-4 shadow-sm"><i class="fas fa-search me-2"></i>Tìm thêm phòng</a>
     </div>
-}
 
-<div class="row g-4">
-    @if (Model.Any())
+    @if (TempData["SuccessMessage"] != null)
     {
-        @foreach (var item in Model)
+        <div class="alert alert-success border-0 shadow-sm rounded-4 py-3 px-4 mb-4 animate-fade-in d-flex align-items-center">
+            <i class="fas fa-check-circle me-3 fs-4"></i>
+            <div>@TempData["SuccessMessage"]</div>
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row g-4">
+        @if (Model.Any())
         {
-            <div class="col-md-6">
-                <div class="card shadow-sm border-0 h-100 p-3">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            @{
-                                var mainImg = item.Property?.ImagesProperties?.FirstOrDefault(i => i.IsMain) ?? item.Property?.ImagesProperties?.FirstOrDefault();
-                            }
-                            @if (mainImg != null)
-                            {
-                                <img src="@mainImg.ImageUrl" class="rounded" style="width: 100px; height: 100px; object-fit: cover;">
-                            }
-                            else
-                            {
-                                <div class="bg-light rounded d-flex align-items-center justify-content-center text-muted" style="width: 100px; height: 100px;">No Image</div>
-                            }
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <h5 class="fw-bold mb-1">@item.Property?.Title</h5>
-                            <p class="text-muted small mb-2"><i class="fas fa-calendar-alt"></i> Ngày hẹn: @item.AppointmentDate.ToString("dd/MM/yyyy HH:mm")</p>
-                            
-                            <div class="d-flex justify-content-between align-items-center">
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-6 animate-slide-up">
+                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 transition-hover">
+                        <div class="row g-0 h-100">
+                            <div class="col-sm-4 position-relative">
                                 @{
-                                    var badgeClass = item.Status switch
-                                    {
-                                        "Approved" => "bg-success",
-                                        "Cancelled" => "bg-danger",
-                                        "Pending" => "bg-warning text-dark",
-                                        _ => "bg-secondary"
-                                    };
+                                    var mainImg = item.Property?.ImagesProperties?.FirstOrDefault(i => i.IsMain) ?? item.Property?.ImagesProperties?.FirstOrDefault();
                                 }
-                                <span class="badge @badgeClass">@item.Status</span>
-                                
-                                @if (item.Status == "Pending")
+                                @if (mainImg != null)
                                 {
-                                    <form asp-action="Cancel" asp-route-id="@item.AppointmentId" method="post">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn hủy lịch hẹn?')">Hủy lịch</button>
-                                    </form>
+                                    <img src="@mainImg.ImageUrl" class="w-100 h-100 object-fit-cover" style="min-height: 160px;">
                                 }
+                                else
+                                {
+                                    <div class="bg-light w-100 h-100 d-flex align-items-center justify-content-center text-muted" style="min-height: 160px;">
+                                        <i class="fas fa-image fs-1 opacity-25"></i>
+                                    </div>
+                                }
+                                <div class="position-absolute top-0 start-0 m-2">
+                                    @{
+                                        var badgeClass = item.Status switch
+                                        {
+                                            "Approved" => "bg-success",
+                                            "Cancelled" => "bg-danger",
+                                            "Pending" => "bg-warning text-dark",
+                                            _ => "bg-secondary"
+                                        };
+                                        var statusVn = item.Status switch
+                                        {
+                                            "Approved" => "Đã duyệt",
+                                            "Cancelled" => "Đã hủy",
+                                            "Pending" => "Chờ duyệt",
+                                            _ => item.Status
+                                        };
+                                    }
+                                    <span class="badge @badgeClass rounded-pill shadow-sm px-3 py-2">@statusVn</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="card-body p-4 d-flex flex-column h-100">
+                                    <h5 class="fw-bold mb-2 text-truncate-2">@item.Property?.Title</h5>
+                                    <p class="text-muted small mb-3">
+                                        <i class="fas fa-map-marker-alt me-1"></i> @item.Property?.Address, @item.Property?.City
+                                    </p>
+                                    
+                                    <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-end">
+                                        <div>
+                                            <p class="text-muted small mb-1">Thời gian hẹn:</p>
+                                            <p class="fw-bold text-danger mb-0">
+                                                <i class="far fa-clock me-1"></i> @item.AppointmentDate.ToString("HH:mm dd/MM/yyyy")
+                                            </p>
+                                        </div>
+                                        
+                                        @if (item.Status == "Pending")
+                                        {
+                                            <form asp-action="Cancel" asp-route-id="@item.AppointmentId" method="post" class="cancel-form">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3">Hủy lịch</button>
+                                            </form>
+                                        }
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center py-5 glass-card rounded-5 animate-fade-in mt-4">
+                <div class="mb-4">
+                    <i class="fas fa-calendar-minus text-muted opacity-25" style="font-size: 5rem;"></i>
+                </div>
+                <h3 class="text-muted fw-bold">Bạn chưa có lịch hẹn nào</h3>
+                <p class="text-muted mb-4">Hãy khám phá các bất động sản và đặt lịch xem ngay hôm nay!</p>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-premium px-5 rounded-pill shadow-lg">Khám phá ngay</a>
             </div>
         }
-    }
-    else
-    {
-        <div class="col-12 text-center py-5">
-            <p class="h4 text-muted">Bạn chưa có lịch hẹn nào.</p>
-            <a asp-controller="Home" asp-action="Index" class="btn btn-primary mt-3">Tìm phòng trọ ngay</a>
-        </div>
-    }
+    </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $('.cancel-form').on('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            Swal.fire({
+                title: 'Hủy lịch hẹn?',
+                text: "Bạn có chắc chắn muốn hủy yêu cầu đặt lịch này không?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ff385c',
+                cancelButtonColor: '#adb5bd',
+                confirmButtonText: 'Đồng ý hủy',
+                cancelButtonText: 'Quay lại',
+                borderRadius: '1rem'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    </script>
+}
+
+<style>
+    .transition-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.1) !important;
+    }
+    .text-truncate-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>

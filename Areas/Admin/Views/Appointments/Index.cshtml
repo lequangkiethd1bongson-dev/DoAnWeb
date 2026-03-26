@@ -4,56 +4,46 @@
     ViewData["Title"] = "Quản lý lịch hẹn - Admin";
 }
 
-<style>
-    .bg-soft-success { background: rgba(25, 135, 84, 0.1); color: #198754; }
-    .bg-soft-warning { background: rgba(255, 193, 7, 0.1); color: #ffc107; }
-    .bg-soft-danger { background: rgba(220, 53, 69, 0.1); color: #dc3545; }
-    .bg-soft-secondary { background: rgba(108, 117, 125, 0.1); color: #6c757d; }
-    .user-avatar { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid rgba(255, 56, 92, 0.1); }
-</style>
-
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-5 animate-slide-up">
         <div>
-            <h2 class="fw-bold mb-1"><i class="fas fa-calendar-check me-2 text-danger"></i>Lịch hẹn <span class="text-danger">Khách hàng</span></h2>
-            <p class="text-muted small mb-0">Theo dõi và phê duyệt các yêu cầu xem phòng.</p>
+            <h2 class="fw-bold mb-1"><i class="fas fa-calendar-check me-2 text-danger"></i>Quản lý <span class="text-danger">Lịch hẹn</span></h2>
+            <p class="text-muted small mb-0">Hệ thống phê duyệt và theo dõi yêu cầu xem phòng từ khách hàng.</p>
         </div>
         <div class="d-flex gap-2">
-            <form asp-action="Index" method="get" class="d-flex gap-2">
-                <input type="date" name="date" value="@ViewBag.DateFilter" class="form-control rounded-pill border-0 bg-white shadow-sm px-3" style="width: 160px;" />
-                <div class="position-relative">
-                    <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-                    <input type="text" name="search" value="@ViewBag.SearchFilter" class="form-control rounded-pill border-0 bg-white shadow-sm ps-5" placeholder="Tìm tên khách, phòng..." style="width: 250px;" />
-                </div>
-                <button type="submit" class="btn btn-dark rounded-pill px-4 shadow-sm">Lọc</button>
-                <a asp-action="Index" class="btn btn-light rounded-pill px-3 shadow-sm"><i class="fas fa-undo"></i></a>
-                <a asp-action="ExportToCsv" asp-route-date="@ViewBag.DateFilter" asp-route-search="@ViewBag.SearchFilter" class="btn btn-success rounded-pill px-4 shadow-sm">
-                    <i class="fas fa-file-csv me-1"></i>Xuất CSV
-                </a>
-            </form>
+            <a asp-action="ExportToCsv" class="btn btn-success rounded-pill px-4 shadow-sm">
+                <i class="fas fa-file-csv me-2"></i>Xuất báo cáo CSV
+            </a>
         </div>
     </div>
 
-    <div class="card border-0 shadow-sm rounded-4 overflow-hidden animate-fade-in">
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden animate-fade-in p-4 bg-white">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table id="adminAppointmentsTable" class="table table-hover align-middle mb-0 w-100">
                 <thead class="bg-light border-0">
                     <tr class="text-muted small text-uppercase fw-bold border-0">
-                        <th class="ps-4 py-3 border-0">Khách hàng</th>
-                        <th class="py-3 border-0">Bất động sản</th>
-                        <th class="py-3 border-0">Thời gian hẹn</th>
+                        <th class="ps-3 py-3 border-0">Khách hàng</th>
+                        <th class="py-3 border-0">Thông tin phòng</th>
+                        <th class="py-3 border-0">Lịch xem phòng</th>
                         <th class="py-3 border-0">Trạng thái</th>
-                        <th class="text-end pe-4 py-3 border-0">Thao tác</th>
+                        <th class="text-end pe-3 py-3 border-0" data-orderable="false">Hành động</th>
                     </tr>
                 </thead>
                 <tbody class="border-0">
                     @foreach (var item in Model)
                     {
                         <tr class="border-bottom">
-                            <td class="ps-4 py-4">
+                            <td class="ps-3 py-4">
                                 <div class="d-flex align-items-center">
-                                    <div class="user-avatar rounded-circle bg-soft-red text-danger me-3">
-                                        @(item.User?.FullName?[0] ?? 'U')
+                                    <div class="avatar-circle rounded-circle bg-soft-red text-danger me-3 d-flex align-items-center justify-content-center fw-bold" style="width: 40px; height: 40px; background: rgba(255, 56, 92, 0.1);">
+                                        @if (!string.IsNullOrEmpty(item.User?.AvatarUrl))
+                                        {
+                                            <img src="@item.User.AvatarUrl" class="w-100 h-100 rounded-circle object-fit-cover" />
+                                        }
+                                        else
+                                        {
+                                            @(item.User?.FullName?[0] ?? 'U')
+                                        }
                                     </div>
                                     <div>
                                         <div class="fw-bold text-dark">@item.User?.FullName</div>
@@ -62,8 +52,8 @@
                                 </div>
                             </td>
                             <td>
-                                <div class="fw-bold text-truncate" style="max-width: 250px;">@item.Property?.Title</div>
-                                <div class="text-muted small"><i class="fas fa-map-marker-alt me-1"></i> @item.Property?.District</div>
+                                <div class="fw-bold text-truncate" style="max-width: 200px;" title="@item.Property?.Title">@item.Property?.Title</div>
+                                <div class="text-muted small"><i class="fas fa-money-bill-wave me-1"></i> @item.Property?.Price.ToString("N0") VNĐ</div>
                             </td>
                             <td>
                                 <div class="fw-bold text-dark mb-1"><i class="far fa-calendar-alt me-2 text-danger"></i>@item.AppointmentDate.ToString("dd/MM/yyyy")</div>
@@ -73,44 +63,43 @@
                                 @{
                                     var badgeClass = item.Status switch
                                     {
-                                        "Approved" => "bg-soft-success",
-                                        "Cancelled" => "bg-soft-danger",
-                                        "Pending" => "bg-soft-warning",
-                                        _ => "bg-soft-secondary"
+                                        "Approved" => "bg-success",
+                                        "Cancelled" => "bg-danger",
+                                        "Pending" => "bg-warning text-dark",
+                                        _ => "bg-secondary"
+                                    };
+                                    var statusVn = item.Status switch
+                                    {
+                                        "Approved" => "Đã duyệt",
+                                        "Cancelled" => "Đã hủy",
+                                        "Pending" => "Chờ duyệt",
+                                        _ => item.Status
                                     };
                                 }
-                                <span class="badge @badgeClass rounded-pill px-3 py-2" style="font-size: 0.7rem; font-weight: 700;">@item.Status.ToUpper()</span>
+                                <span class="badge @badgeClass rounded-pill px-3 py-2 shadow-sm" style="font-size: 0.75rem;">@statusVn</span>
                             </td>
-                            <td class="text-end pe-4">
-                                @if (item.Status == "Pending")
+                            <td class="text-end pe-3">
+                                @if (string.Equals(item.Status?.Trim(), "Pending", StringComparison.OrdinalIgnoreCase))
                                 {
                                     <div class="d-flex justify-content-end gap-2">
-                                        <form asp-action="Approve" asp-route-id="@item.AppointmentId" method="post" class="confirm-form">
+                                        <form asp-action="Approve" asp-route-id="@item.AppointmentId" method="post" class="confirm-form" data-type="approve">
                                             @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-sm btn-success rounded-pill px-3 shadow-sm">Duyệt</button>
+                                            <button type="submit" class="btn btn-sm btn-success rounded-pill px-3 shadow-sm">
+                                                <i class="fas fa-check me-1"></i>Duyệt ngay
+                                            </button>
                                         </form>
-                                        <form asp-action="Cancel" asp-route-id="@item.AppointmentId" method="post" class="confirm-form">
+                                        <form asp-action="Cancel" asp-route-id="@item.AppointmentId" method="post" class="confirm-form" data-type="cancel">
                                             @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3 shadow-sm">Từ chối</button>
+                                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3 shadow-sm">
+                                                <i class="fas fa-times me-1"></i>Từ chối
+                                            </button>
                                         </form>
                                     </div>
                                 }
                                 else
                                 {
-                                    <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.65rem;">Hoàn tất</span>
+                                    <span class="text-muted small fst-italic"><i class="fas fa-info-circle me-1"></i> Đã xử lý</span>
                                 }
-                            </td>
-                        </tr>
-                    }
-                    @if (!Model.Any())
-                    {
-                        <tr>
-                            <td colspan="5" class="text-center py-5 text-muted">
-                                <div class="py-5">
-                                    <i class="fas fa-calendar-times fa-3x mb-3 d-block opacity-25"></i>
-                                    <p class="fw-bold mb-0">Không tìm thấy lịch hẹn nào khớp với bộ lọc.</p>
-                                    <a asp-action="Index" class="btn btn-link text-danger text-decoration-none small">Xóa bộ lọc</a>
-                                </div>
                             </td>
                         </tr>
                     }
@@ -122,24 +111,40 @@
 
 @section Scripts {
     <script>
-        $('.confirm-form').on('submit', function(e) {
-            e.preventDefault();
-            const form = this;
-            const action = $(form).find('button').text().trim();
-            
-            Swal.fire({
-                title: action === 'Duyệt' ? 'Xác nhận duyệt?' : 'Xác nhận từ chối?',
-                text: "Thao tác này sẽ cập nhật trạng thái lịch hẹn ngay lập tức.",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: action === 'Duyệt' ? '#198754' : '#ff385c',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Đồng ý',
-                cancelButtonText: 'Quay lại'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
+        $(document).ready(function() {
+            $('#adminAppointmentsTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Vietnamese.json"
+                },
+                "order": [[2, "desc"]], // Sắp xếp theo ngày hẹn mới nhất
+                "pageLength": 10,
+                "responsive": true,
+                "columnDefs": [
+                    { "orderable": false, "targets": 4 }
+                ]
+            });
+
+            $(document).on('submit', '.confirm-form', function(e) {
+                e.preventDefault();
+                const form = this;
+                const type = $(form).data('type');
+                const isApprove = type === 'approve';
+                
+                Swal.fire({
+                    title: isApprove ? 'Duyệt yêu cầu xem phòng?' : 'Từ chối yêu cầu?',
+                    text: isApprove ? "Bạn đồng ý cho khách hàng xem phòng này?" : "Yêu cầu này sẽ bị từ chối.",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: isApprove ? '#198754' : '#ff385c',
+                    cancelButtonColor: '#adb5bd',
+                    confirmButtonText: 'Đồng ý',
+                    cancelButtonText: 'Quay lại',
+                    borderRadius: '1rem'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
             });
         });
     </script>
