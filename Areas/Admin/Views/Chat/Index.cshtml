@@ -1,0 +1,154 @@
+@model IEnumerable<DoAnWeb.Models.ApplicationUser>
+@{
+    ViewData["Title"] = "Quản lý Hỗ trợ Khách hàng (Chat)";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Danh sách người dùng -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Danh sách Khách hàng</h5>
+                </div>
+                <div class="card-body p-0" style="height: 500px; overflow-y: auto;">
+                    <ul class="list-group list-group-flush" id="chat-user-list">
+                        @if(Model != null && Model.Any())
+                        {
+                            foreach(var user in Model)
+                            {
+                                <li class="list-group-item user-item d-flex justify-content-between align-items-center" style="cursor:pointer;" data-userid="@user.Id">
+                                    <div class="fw-bold">@user.UserName</div>
+                                    <span class="badge bg-secondary rounded-pill d-none new-msg-badge">Mới</span>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li class="list-group-item text-muted">Chưa có cuộc trò chuyện nào</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Khung chat -->
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0" id="chat-title">Chọn một khách hàng để chat</h5>
+                </div>
+                <div class="card-body bg-light" id="chat-window" style="height: 400px; overflow-y: auto; display: none;">
+                    <!-- Nơi hiển thị tin nhắn -->
+                </div>
+                <div class="card-footer" id="chat-input-area" style="display: none;">
+                    <div class="input-group">
+                        <input type="text" id="chat-message" class="form-control" placeholder="Nhập tin nhắn để trả lời khách hàng..." />
+                        <button id="send-btn" class="btn btn-primary px-4"><i class="bi bi-send"></i> Gửi</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
+    <script>
+        let selectedUserId = null;
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chatHub")
+            .build();
+
+        // Nhận tin nhắn mới từ Hub
+        connection.on("ReceiveMessage", function(senderId, message, timestamp) {
+            if (selectedUserId === senderId) {
+                // Đang mở chat với user này, hiển thị ngay
+                const msgHtml = `<div class="d-flex flex-column align-items-start mb-3">
+                                    <div class="bg-white p-2 rounded shadow-sm border" style="max-width: 75%;">
+                                        <strong>Khách:</strong> ${message}
+                                    </div>
+                                    <small class="text-muted mt-1" style="font-size: 11px;">Mới nhận</small>
+                                 </div>`;
+                $('#chat-window').append(msgHtml);
+                $('#chat-window').scrollTop($('#chat-window')[0].scrollHeight);
+            } else {
+                // Hiện marker "Mới" cho user trong danh sách
+                $(`.user-item[data-userid="${senderId}"]`).find('.new-msg-badge').removeClass('d-none');
+            }
+        });
+
+        connection.start().catch(function(err) {
+            console.error(err.toString());
+        });
+
+        // Click để load lịch sử chat
+        $('.user-item').click(function() {
+            $('.user-item').removeClass('bg-light border-primary');
+            $(this).addClass('bg-light border-primary');
+            $(this).find('.new-msg-badge').addClass('d-none');
+
+            selectedUserId = $(this).data('userid');
+            const userName = $(this).find('.fw-bold').text();
+            $('#chat-title').text(`Đang hỗ trợ: ${userName}`);
+
+            $('#chat-window').empty().show();
+            $('#chat-input-area').show();
+
+            // Fetch tin nhắn cũ sử dụng API GetMessages
+            $.get('/Admin/Chat/GetMessages?userId=' + selectedUserId, function(data) {
+                data.forEach(function(msg) {
+                    if (msg.isAdminSender) {
+                        const msgHtml = `<div class="d-flex flex-column align-items-end mb-3">
+                                            <div class="bg-primary text-white p-2 rounded shadow-sm" style="max-width: 75%;">
+                                                ${msg.content}
+                                            </div>
+                                         </div>`;
+                        $('#chat-window').append(msgHtml);
+                    } else {
+                        const msgHtml = `<div class="d-flex flex-column align-items-start mb-3">
+                                            <div class="bg-white p-2 rounded shadow-sm border" style="max-width: 75%;">
+                                                <strong>Khách:</strong> ${msg.content}
+                                            </div>
+                                         </div>`;
+                        $('#chat-window').append(msgHtml);
+                    }
+                });
+                $('#chat-window').scrollTop($('#chat-window')[0].scrollHeight);
+            });
+        });
+
+        // Gửi tin nhắn
+        $('#send-btn').click(function() {
+            const message = $('#chat-message').val().trim();
+            if(!message || !selectedUserId) return;
+            
+            // Disable button tạm thời
+            $(this).prop('disabled', true);
+
+            connection.invoke("SendMessage", selectedUserId, message).then(function() {
+                const msgHtml = `<div class="d-flex flex-column align-items-end mb-3">
+                                    <div class="bg-primary text-white p-2 rounded shadow-sm" style="max-width: 75%;">
+                                        ${message}
+                                    </div>
+                                 </div>`;
+                $('#chat-window').append(msgHtml);
+                $('#chat-window').scrollTop($('#chat-window')[0].scrollHeight);
+                $('#chat-message').val('');
+                $('#send-btn').prop('disabled', false);
+            }).catch(function(err) {
+                console.error(err.toString());
+                $('#send-btn').prop('disabled', false);
+                alert('Có lỗi xảy ra khi gửi tin nhắn.');
+            });
+        });
+
+        // Hỗ trợ nhấn Enter để gửi
+        $('#chat-message').keypress(function(e) {
+            if(e.which === 13) {
+                $('#send-btn').click();
+            }
+        });
+    </script>
+}

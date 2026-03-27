@@ -18,6 +18,7 @@ namespace DoAnWeb.Data
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Amenity> Amenities { get; set; }
         public DbSet<PropertyAmenity> PropertyAmenities { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -58,6 +59,19 @@ namespace DoAnWeb.Data
                 .HasOne(pa => pa.Amenity)
                 .WithMany(a => a.PropertyAmenities)
                 .HasForeignKey(pa => pa.AmenityId);
+
+            // Configure ChatMessage to prevent cascade cycles
+            builder.Entity<ChatMessage>()
+                .HasOne(m => m.Sender)
+                .WithMany()
+                .HasForeignKey(m => m.SenderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<ChatMessage>()
+                .HasOne(m => m.Receiver)
+                .WithMany()
+                .HasForeignKey(m => m.ReceiverId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

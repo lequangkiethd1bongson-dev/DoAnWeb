@@ -22,6 +22,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => {
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddSignalR();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -70,5 +71,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+app.MapHub<DoAnWeb.Hubs.ChatHub>("/chatHub");
 
 app.Run();
