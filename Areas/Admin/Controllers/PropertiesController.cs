@@ -164,6 +164,10 @@ namespace DoAnWeb.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            
+            property.ImagesProperties = await _context.ImagesProperties.Where(i => i.PropertyId == property.PropertyId).ToListAsync();
+            ViewBag.Amenities = await _context.Amenities.ToListAsync();
+            ViewBag.SelectedAmenities = selectedAmenities?.ToList() ?? new List<int>();
             return View(property);
         }
 

@@ -55,6 +55,29 @@
 
                 <div class="card border-0 shadow-sm rounded-4 mb-4">
                     <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4 border-bottom pb-2">Vị trí</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="City" class="form-label fw-bold small text-uppercase">Thành phố</label>
+                                <input asp-for="City" class="form-control rounded-pill border-0 bg-light px-3 shadow-none" />
+                                <span asp-validation-for="City" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="District" class="form-label fw-bold small text-uppercase">Quận/Huyện</label>
+                                <input asp-for="District" class="form-control rounded-pill border-0 bg-light px-3 shadow-none" />
+                                <span asp-validation-for="District" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Address" class="form-label fw-bold small text-uppercase">Địa chỉ đầy đủ</label>
+                            <input asp-for="Address" class="form-control rounded-pill border-0 bg-light px-3 shadow-none" />
+                            <span asp-validation-for="Address" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div class="card-body p-4">
                         <h5 class="fw-bold mb-4 border-bottom pb-2">Tiện ích (Amenities)</h5>
                         <div class="row g-3">
                             @foreach (var amenity in (ViewBag.Amenities as List<Amenity>) ?? new List<Amenity>())
