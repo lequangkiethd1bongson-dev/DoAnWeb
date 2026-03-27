@@ -33,7 +33,7 @@ namespace DoAnWeb.Data
                     UserName = adminEmail,
                     Email = adminEmail,
                     FullName = "System Admin",
-                    Phone = "0123456789",
+                    UserPhone = "0123456789",
                     EmailConfirmed = true
                 };
 

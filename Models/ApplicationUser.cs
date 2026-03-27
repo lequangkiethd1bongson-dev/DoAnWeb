@@ -9,7 +9,9 @@ namespace DoAnWeb.Models
         [StringLength(100)]
         public string? FullName { get; set; }
 
-        public string? Phone { get; set; } // Map thêm trường Phone theo yêu cầu
+        public string? UserPhone { get; set; } // Map thêm trường Phone theo yêu cầu
+        
+        public string? AvatarUrl { get; set; }
 
         public string Status { get; set; } = "Active";
 

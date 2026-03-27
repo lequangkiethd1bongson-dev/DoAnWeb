@@ -86,10 +86,20 @@ namespace DoAnWeb.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Approve(int id)
         {
-            var appointment = await _context.Appointments.FindAsync(id);
+            var appointment = await _context.Appointments
+                .Include(a => a.Property)
+                .FirstOrDefaultAsync(a => a.AppointmentId == id);
+
             if (appointment != null)
             {
                 appointment.Status = "Approved";
+                
+                // Cập nhật trạng thái bất động sản sang "Sold" (Đã cho thuê/bán)
+                if (appointment.Property != null)
+                {
+                    appointment.Property.Status = "Sold";
+                }
+
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index));

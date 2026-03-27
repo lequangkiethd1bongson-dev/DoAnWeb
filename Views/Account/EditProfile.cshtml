@@ -1,0 +1,118 @@
+@model DoAnWeb.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "Chỉnh sửa thông tin";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 animate-slide-up">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden glass-card">
+                <div class="card-header bg-premium py-4 text-center text-white border-0">
+                    <h3 class="fw-bold mb-0">Chỉnh sửa hồ sơ</h3>
+                </div>
+                <div class="card-body p-5">
+                    <form asp-action="EditProfile" method="post" enctype="multipart/form-data" id="editProfileForm">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+                        
+                        <div class="text-center mb-5">
+                            <div class="avatar-edit-wrapper position-relative mx-auto mb-3" style="width: 150px; height: 150px;">
+                                <div class="avatar-preview shadow-sm rounded-circle border border-4 border-white overflow-hidden w-100 h-100">
+                                    @if (!string.IsNullOrEmpty(Model.AvatarUrl))
+                                    {
+                                        <img id="imagePreview" src="@Model.AvatarUrl" class="w-100 h-100 object-fit-cover" alt="Avatar" />
+                                    }
+                                    else
+                                    {
+                                        <div id="textPreview" class="w-100 h-100 bg-soft-red text-danger d-flex align-items-center justify-content-center fw-bold fs-1">
+                                            @Model.FullName?.Substring(0, 1).ToUpper()
+                                        </div>
+                                        <img id="imagePreview" src="#" class="w-100 h-100 object-fit-cover d-none" alt="Avatar Preview" />
+                                    }
+                                </div>
+                                <label for="avatarInput" class="btn btn-sm btn-light shadow-sm position-absolute bottom-0 end-0 rounded-circle p-2" title="Đổi ảnh đại diện">
+                                    <i class="fas fa-camera text-danger"></i>
+                                </label>
+                                <input type="file" name="avatar" id="avatarInput" class="d-none" accept="image/*" />
+                            </div>
+                            <p class="text-muted small">Nhấp vào biểu tượng máy ảnh để thay đổi ảnh đại diện</p>
+                        </div>
+
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-uppercase text-muted">Họ và tên</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 border-0 rounded-start-pill ps-3">
+                                        <i class="fas fa-user text-danger"></i>
+                                    </span>
+                                    <input type="text" name="fullName" class="form-control bg-light border-0 rounded-end-pill py-2" value="@Model.FullName" required />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-uppercase text-muted">Số điện thoại</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 border-0 rounded-start-pill ps-3">
+                                        <i class="fas fa-phone text-danger"></i>
+                                    </span>
+                                    <input type="tel" name="phone" class="form-control bg-light border-0 rounded-end-pill py-2" value="@Model.UserPhone" required />
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label fw-bold small text-uppercase text-muted">Email (Tên đăng nhập)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0 border-0 rounded-start-pill ps-3">
+                                        <i class="fas fa-envelope text-muted"></i>
+                                    </span>
+                                    <input type="text" class="form-control bg-white border-0 rounded-end-pill py-2" value="@Model.Email" disabled />
+                                </div>
+                                <div class="form-text mt-1 ps-2">Email không thể thay đổi sau khi đăng ký.</div>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 d-flex gap-3 justify-content-center">
+                            <a asp-action="Profile" class="btn btn-outline-dark rounded-pill px-5">Hủy</a>
+                            <button type="submit" class="btn btn-premium rounded-pill px-5 shadow-sm">Lưu thay đổi</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('avatarInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgPreview = document.getElementById('imagePreview');
+                    const textPreview = document.getElementById('textPreview');
+                    
+                    imgPreview.src = e.target.result;
+                    imgPreview.classList.remove('d-none');
+                    if (textPreview) textPreview.classList.add('d-none');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+}
+
+<style>
+    .bg-premium {
+        background: var(--primary-gradient) !important;
+    }
+    .bg-soft-red { background-color: rgba(255, 56, 92, 0.1); }
+    .avatar-edit-wrapper label:hover {
+        background-color: #f8f9fa;
+        transform: scale(1.1);
+        transition: all 0.2s ease;
+    }
+    .form-control:focus {
+        box-shadow: none;
+        background-color: #fff !important;
+        border: 1px solid var(--primary-red) !important;
+    }
+</style>
