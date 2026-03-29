@@ -19,7 +19,7 @@ namespace DoAnWeb.Controllers
         {
             var query = _context.Properties
                 .Include(p => p.ImagesProperties)
-                .Include(p => p.Reviews)
+                .Include(p => p.Reviews.Where(r => r.IsApproved))
                 .AsSplitQuery()
                 .Where(p => p.Status == "Available")
                 .AsQueryable();
@@ -117,7 +117,7 @@ namespace DoAnWeb.Controllers
                 .Include(p => p.ImagesProperties)
                 .Include(p => p.PropertyAmenities)
                     .ThenInclude(pa => pa.Amenity)
-                .Include(p => p.Reviews)
+                .Include(p => p.Reviews.Where(r => r.IsApproved))
                     .ThenInclude(r => r.User)
                 .FirstOrDefaultAsync(m => m.PropertyId == id);
 

@@ -23,6 +23,8 @@ namespace DoAnWeb.Models
         [StringLength(1000)]
         public string Comment { get; set; } = string.Empty;
 
+        public bool IsApproved { get; set; } = false;
+        
         public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }

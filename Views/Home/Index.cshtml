@@ -120,7 +120,7 @@
                             var mainImg = item.ImagesProperties.FirstOrDefault(i => i.IsMain) ?? item.ImagesProperties.FirstOrDefault();
                         }
                         <div class="position-relative overflow-hidden" style="height: 260px;">
-                            <img src="@(mainImg?.ImageUrl ?? "/images/no-image.jpg")" class="w-100 h-100 object-fit-cover" alt="Property">
+                            <img src="@(mainImg?.ImageUrl ?? "/images/no-image.png")" class="w-100 h-100 object-fit-cover" alt="Property">
                             @{
                                 bool isFav = ViewBag.FavoriteIds != null && ((List<int>)ViewBag.FavoriteIds).Contains(item.PropertyId);
                             }

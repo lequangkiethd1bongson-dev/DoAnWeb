@@ -1,23 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "D:\\DoAnWeb\\DoAnWeb.csproj": {}
+    "D:\\HutechIT\\DOAN\\DoAnWeb\\DoAnWeb.csproj": {}
   },
   "projects": {
-    "D:\\DoAnWeb\\DoAnWeb.csproj": {
+    "D:\\HutechIT\\DOAN\\DoAnWeb\\DoAnWeb.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\DoAnWeb\\DoAnWeb.csproj",
+        "projectUniqueName": "D:\\HutechIT\\DOAN\\DoAnWeb\\DoAnWeb.csproj",
         "projectName": "DoAnWeb",
-        "projectPath": "D:\\DoAnWeb\\DoAnWeb.csproj",
-        "packagesPath": "C:\\Users\\pc\\.nuget\\packages\\",
-        "outputPath": "D:\\DoAnWeb\\obj\\",
+        "projectPath": "D:\\HutechIT\\DOAN\\DoAnWeb\\DoAnWeb.csproj",
+        "packagesPath": "C:\\Users\\vanli\\.nuget\\packages\\",
+        "outputPath": "D:\\HutechIT\\DOAN\\DoAnWeb\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
+          "C:\\Program Files\\DevExpress 22.2\\Components\\Offline Packages",
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\pc\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\vanli\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 22.2.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,6 +28,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\DevExpress 22.2\\Components\\System\\Components\\Packages": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -43,7 +46,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
@@ -91,7 +95,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.310/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

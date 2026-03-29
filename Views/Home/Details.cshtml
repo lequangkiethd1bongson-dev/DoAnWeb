@@ -167,6 +167,7 @@
                     {
                         <form asp-controller="Reviews" asp-action="Create" method="post">
                             @Html.AntiForgeryToken()
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
                             <input type="hidden" name="PropertyId" value="@Model.PropertyId" />
                             <div class="mb-4">
                                 <div class="star-rating d-flex flex-row-reverse justify-content-start">
@@ -255,10 +256,10 @@
             });
 
             @if (TempData["SuccessMessage"] != null) {
-                <text>Swal.fire({ icon: 'success', title: 'Thành công!', text: '@TempData["SuccessMessage"]', confirmButtonColor: '#ff385c' });</text>
+                <text>Swal.fire({ icon: 'success', title: 'Thông báo', text: '@TempData["SuccessMessage"]', confirmButtonColor: '#ff385c' });</text>
             }
             @if (TempData["ErrorMessage"] != null) {
-                <text>Swal.fire({ icon: 'error', title: 'Lỗi lịch hẹn', text: '@TempData["ErrorMessage"]', confirmButtonColor: '#ff385c' });</text>
+                <text>Swal.fire({ icon: 'error', title: 'Thông báo lỗi', text: '@TempData["ErrorMessage"]', confirmButtonColor: '#ff385c' });</text>
             }
         });
     </script>

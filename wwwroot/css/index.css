@@ -411,3 +411,27 @@ table.dataTable.no-footer {
     font-style: fst-italic;
     color: var(--text-muted);
 }
+/* Hover Dropdown for Desktop */
+@media (min-width: 992px) {
+    .navbar-nav .nav-item.dropdown:hover > .dropdown-menu {
+        display: block;
+        margin-top: 0;
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        transition: var(--transition-smooth);
+    }
+    
+    .navbar-nav .nav-item.dropdown .dropdown-menu {
+        display: block;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(10px);
+        transition: var(--transition-smooth);
+        pointer-events: none;
+    }
+    
+    .navbar-nav .nav-item.dropdown:hover .dropdown-menu {
+        pointer-events: auto;
+    }
+}

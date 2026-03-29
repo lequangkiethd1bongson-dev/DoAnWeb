@@ -42,7 +42,7 @@
                                         @{
                                             var mainImage = item.ImagesProperties.FirstOrDefault(i => i.IsMain) ?? item.ImagesProperties.FirstOrDefault();
                                         }
-                                        <img src="@(mainImage?.ImageUrl ?? "/images/no-image.jpg")" class="rounded-3 mb-2 shadow-sm" style="width: 100%; height: 150px; object-fit: cover;" />
+                                        <img src="@(mainImage?.ImageUrl ?? "/images/no-image.png")" class="rounded-3 mb-2 shadow-sm" style="width: 100%; height: 150px; object-fit: cover;" />
                                         <div class="fw-bold text-truncate px-2">@item.Title</div>
                                     </div>
                                 </th>

@@ -23,11 +23,24 @@ namespace DoAnWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                review.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                review.CreatedAt = DateTime.Now;
-                _context.Reviews.Add(review);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Details", "Home", new { id = review.PropertyId });
+                try
+                {
+                    review.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    review.CreatedAt = DateTime.Now;
+                    review.IsApproved = false; // Luôn mặc định là false khi mới tạo
+                    _context.Reviews.Add(review);
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Cảm ơn bạn đã gửi đánh giá! Đánh giá sẽ hiển thị sau khi được kiểm duyệt.";
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "Có lỗi xảy ra khi gửi đánh giá: " + ex.Message;
+                }
+            }
+            else
+            {
+                var errors = string.Join(" ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                TempData["ErrorMessage"] = "Dữ liệu không hợp lệ: " + errors;
             }
             return RedirectToAction("Details", "Home", new { id = review.PropertyId });
         }
