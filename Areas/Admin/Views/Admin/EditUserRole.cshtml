@@ -1,0 +1,50 @@
+@model DoAnWeb.Models.ViewModels.EditUserRoleViewModel
+
+@{
+    ViewData["Title"] = "Chỉnh sửa quyền hạn";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-5">
+                    <h2 class="fw-bold mb-4">Đổi <span class="text-danger">quyền hạn</span></h2>
+                    <p class="text-muted mb-4">Người dùng: <strong>@Model.Email</strong></p>
+                    
+                    <form asp-action="EditUserRole" method="post">
+                        <input type="hidden" asp-for="UserId" />
+                        <input type="hidden" asp-for="Email" />
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-uppercase">Quyền hiện tại</label>
+                            <div class="form-control rounded-pill border-0 bg-light px-3 shadow-none text-muted">
+                                @(Model.CurrentRole ?? "Chưa có")
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label asp-for="SelectedRole" class="form-label fw-bold small text-uppercase">Chọn quyền mới</label>
+                            <select asp-for="SelectedRole" class="form-select rounded-pill border-0 bg-light px-3 shadow-none">
+                                @foreach (var role in Model.Roles)
+                                {
+                                    <option value="@role">@role</option>
+                                }
+                            </select>
+                            <span asp-validation-for="SelectedRole" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger btn-lg rounded-pill fw-bold shadow-sm">Cập nhật</button>
+                            <a asp-action="Users" class="btn btn-link text-muted text-decoration-none small">Quay lại danh sách</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

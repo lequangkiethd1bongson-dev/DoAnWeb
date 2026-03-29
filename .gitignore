@@ -1,0 +1,27 @@
+## [Visual Studio]
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.userosscache
+*.sln.docstates
+
+## [Visual Studio Code]
+.vscode/
+
+## [User-specific files]
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## [Build results]
+[Aa]ppsettings.Local.json
+[Aa]ppsettings.Development.json
+dist/
+build/
+
+## [Others]
+.DS_Store
+node_modules/

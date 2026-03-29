@@ -135,7 +135,7 @@
                             <div class="d-flex justify-content-between align-items-start mb-3">
                                 <div class="d-flex align-items-center">
                                     <div class="avatar bg-white text-danger fw-bold rounded-circle border shadow-sm d-flex align-items-center justify-content-center me-3" style="width: 54px; height: 54px; font-size: 1.2rem;">
-                                        @(review.User?.FullName?[0] ?? 'U')
+                                        @(!string.IsNullOrEmpty(review.User?.FullName) ? review.User.FullName[0] : 'U')
                                     </div>
                                     <div>
                                         <div class="fw-bold">@(review.User?.FullName ?? "Khách hàng")</div>

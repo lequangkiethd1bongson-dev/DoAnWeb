@@ -13,7 +13,7 @@ namespace DoAnWeb.Data
             var _context = serviceProvider.GetRequiredService<ApplicationDbContext>();
 
             // 1. Tạo Roles
-            string[] roleNames = { "Admin", "User" };
+            string[] roleNames = { "Admin", "Staff", "Staff_Property", "Staff_Appointment", "User" };
             foreach (var roleName in roleNames)
             {
                 if (!await roleManager.RoleExistsAsync(roleName))

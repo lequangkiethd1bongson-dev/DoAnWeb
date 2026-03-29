@@ -35,19 +35,34 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
                         </li>
-                        @if (User.IsInRole("Admin"))
+                        @if (User.IsInRole("Admin") || User.IsInRole("Staff") || User.IsInRole("Staff_Property") || User.IsInRole("Staff_Appointment"))
                         {
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle fw-bold" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown">
                                     <i class="fas fa-user-shield me-1"></i>Quản trị
                                 </a>
                                 <ul class="dropdown-menu shadow border-0 rounded-4 p-2 mt-2">
-                                    <li><a class="dropdown-item rounded-3 py-2" asp-area="Admin" asp-controller="Dashboard" asp-action="Index"><i class="fas fa-chart-line me-2"></i>Dashboard</a></li>
-                                    <li><a class="dropdown-item rounded-3 py-2" asp-area="Admin" asp-controller="Amenities" asp-action="Index"><i class="fas fa-list me-2"></i>Tiện ích</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item rounded-3 py-2" asp-area="Admin" asp-controller="Properties" asp-action="Index"><i class="fas fa-home me-2"></i>Quản lý phòng</a></li>
-                                    <li><a class="dropdown-item rounded-3 py-2" asp-area="Admin" asp-controller="Appointments" asp-action="Index"><i class="fas fa-calendar-alt me-2"></i>Quản lý lịch hẹn</a></li>
-                                    <li><a class="dropdown-item rounded-3 py-2" asp-area="Admin" asp-controller="Reviews" asp-action="Index"><i class="fas fa-comments me-2"></i>Quản lý đánh giá</a></li>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <li><a class="dropdown-item rounded-3 py-2" asp-area="Admin" asp-controller="Dashboard" asp-action="Index"><i class="fas fa-chart-line me-2"></i>Dashboard</a></li>
+                                        <li><a class="dropdown-item rounded-3 py-2" asp-area="Admin" asp-controller="Amenities" asp-action="Index"><i class="fas fa-list me-2"></i>Tiện ích</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                    }
+
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Staff_Property"))
+                                    {
+                                        <li><a class="dropdown-item rounded-3 py-2" asp-area="Admin" asp-controller="Properties" asp-action="Index"><i class="fas fa-home me-2"></i>Quản lý phòng</a></li>
+                                    }
+
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Staff_Appointment"))
+                                    {
+                                        <li><a class="dropdown-item rounded-3 py-2" asp-area="Admin" asp-controller="Appointments" asp-action="Index"><i class="fas fa-calendar-alt me-2"></i>Quản lý lịch hẹn</a></li>
+                                    }
+                                    
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <li><a class="dropdown-item rounded-3 py-2" asp-area="Admin" asp-controller="Admin" asp-action="Users"><i class="fas fa-users-cog me-2"></i>Quản lý người dùng</a></li>
+                                    }
                                 </ul>
                             </li>
                         }

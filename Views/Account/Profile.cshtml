@@ -19,7 +19,7 @@
                             else
                             {
                                 <div class="w-100 h-100 rounded-circle d-flex align-items-center justify-content-center bg-soft-red text-danger fw-bold fs-1">
-                                    @Model.FullName?.Substring(0, 1).ToUpper()
+                                    @(!string.IsNullOrEmpty(Model.FullName) ? Model.FullName.Substring(0, 1).ToUpper() : "U")
                                 </div>
                             }
                         </div>

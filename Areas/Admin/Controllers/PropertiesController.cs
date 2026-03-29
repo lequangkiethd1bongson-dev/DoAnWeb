@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DoAnWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Staff_Property")]
     public class PropertiesController : Controller
     {
         private readonly ApplicationDbContext _context;
