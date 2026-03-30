@@ -42,7 +42,8 @@ namespace DoAnWeb.Controllers
             // Lọc theo loại bất động sản
             if (!string.IsNullOrEmpty(propertyType))
             {
-                query = query.Where(p => p.PropertyType == propertyType);
+                var pt = propertyType.Trim();
+                query = query.Where(p => p.PropertyType.Trim() == pt);
             }
 
             // Lọc theo số phòng
